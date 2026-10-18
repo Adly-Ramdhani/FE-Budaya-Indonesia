@@ -5,6 +5,7 @@ import RumahAdatPage from "./pages/RumahAdatPage"
 import DetailView from "./components/DetailView"
 import LaguPage from "./pages/LaguPage"
 import LoginPage from "./pages/LoginPage"
+import AdminDashboard from "./pages/AdminDashboard"
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
       <Route path="/jelajah/lagu" element={<LaguPage />} />
       <Route path="/jelajahi/lagu" element={<LaguPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/dashboard" element={<AdminDashboard />} />
     </Routes>
   )
 }

@@ -272,54 +272,6 @@ const instruments: Story[] = [
   },
 ]
 
-const clothing: Story[] = [
-  {
-    name: "Baju Bodo",
-    region: "Sulawesi Selatan",
-    description:
-      "Busana tradisional perempuan Bugis dengan potongan longgar dan lengan pendek, lazim dipadukan dengan sarung sutra serta perhiasan.",
-  },
-  {
-    name: "Ulos dalam busana Batak",
-    region: "Sumatera Utara",
-    description:
-      "Kain tenun Batak yang dikenakan sebagai bagian busana adat. Jenis dan cara pemakaiannya mengikuti makna serta konteks upacara.",
-  },
-  {
-    name: "Payas Agung",
-    region: "Bali",
-    description:
-      "Busana upacara yang megah dengan kain berlapis, perhiasan, dan hiasan kepala. Umumnya dikenakan pada momen adat penting.",
-  },
-]
-
-const foods: Story[] = [
-  {
-    label: "Kaya rempah",
-    region: "Sumatera Barat",
-    name: "Rendang",
-    description:
-      "Daging dimasak perlahan dengan santan dan rempah hingga pekat. Hidangan Minangkabau ini lekat dengan jamuan dan perayaan.",
-    image: "99d01.png",
-  },
-  {
-    label: "Gurih & segar",
-    region: "Palembang, Sumatera Selatan",
-    name: "Pempek",
-    description:
-      "Olahan ikan dan sagu yang disajikan dengan kuah cuko bercita rasa asam, manis, dan pedas. Ikon kuliner khas Palembang.",
-    image: "3a211.png",
-  },
-  {
-    label: "Sagu Nusantara",
-    region: "Papua & Maluku",
-    name: "Papeda",
-    description:
-      "Bubur sagu bertekstur lengket yang biasa disantap dengan ikan kuah kuning. Mencerminkan pentingnya sagu dalam kehidupan masyarakat.",
-    image: "2489a.png",
-  },
-]
-
 function Brand() {
   return (
     <a className="brand" href="#top" aria-label="Budaya Indonesia">
@@ -495,6 +447,49 @@ function NgrokAudio({ src }: { src: string }) {
   }
 
   if (blobUrl) return <audio controls autoPlay src={blobUrl} style={{ width: "100%" }} />
+
+  if (loading) return <span style={{ fontSize: "12px", color: "#666" }}>Memuat audio...</span>
+
+  if (failed) {
+    return (
+      <button
+        type="button"
+        onClick={load}
+        style={{
+          fontSize: "12px",
+          color: "#b84e36",
+          background: "none",
+          border: 0,
+          cursor: "pointer",
+        }}
+      >
+        Gagal memuat. Coba lagi
+      </button>
+    )
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={load}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        background: "#b84e36",
+        color: "white",
+        border: 0,
+        borderRadius: 6,
+        padding: "5px 12px",
+        fontSize: "12px",
+        fontWeight: 600,
+        cursor: "pointer",
+        marginTop: "8px",
+      }}
+    >
+      ▶ Putar Audio
+    </button>
+  )
 }
 
 
@@ -1094,14 +1089,9 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           />
           <div className="split split--reverse">
             <div>
-              <StoryList stories={clothing} />
+              <p>Data pakaian daerah belum tersedia.</p>
               <ArrowLink>Jelajahi pakaian daerah</ArrowLink>
             </div>
-            <FeatureImage
-              image="37149.png"
-              title="Baju Bodo, anggun dalam kesederhanaan"
-              subtitle="Sulawesi Selatan • Busana Bugis"
-            />
           </div>
         </div>
       </section>

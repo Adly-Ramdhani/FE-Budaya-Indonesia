@@ -1,0 +1,181 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Display&display=swap");
+@import "tailwindcss";
+
+:root {
+  font-family: "DM Sans", sans-serif;
+  color: #28372d;
+  background: #f8f5ee;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+.font-serif { font-family: "Libre Caslon Display", Georgia, serif; }
+
+.admin-shell { min-height: 100vh; background: #f8f5ee; }
+.sidebar {
+  position: fixed; inset: 0 auto 0 0; z-index: 40; display: flex; width: 258px; flex-direction: column;
+  overflow-y: auto; background: #1f4230; color: #f6f2e9; transform: translateX(-100%); transition: transform .25s ease;
+}
+.sidebar.is-open { transform: translateX(0); }
+.sidebar-scrim { position: fixed; inset: 0; z-index: 39; border: 0; background: rgb(15 29 21 / 55%); }
+.brand { display: flex; height: 70px; align-items: center; gap: 13px; border-bottom: 1px solid rgb(255 255 255 / 9%); padding: 0 20px; }
+.brand-mark { position: relative; width: 26px; height: 26px; transform: rotate(45deg); border: 1px solid #f6f2e9; }
+.brand-mark i { position: absolute; inset: 5px; border: 1px solid #f6f2e9; }
+.brand-mark i:last-child { inset: 10px -4px; }
+.panel-label { display: flex; align-items: center; justify-content: space-between; padding: 21px 20px 15px; color: #ced8d1; font-size: 10px; font-weight: 600; letter-spacing: .17em; text-transform: uppercase; }
+.panel-key { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 6px; background: rgb(255 255 255 / 8%); font-size: 14px; }
+.sidebar-nav { padding: 12px 16px; }
+.nav-group { margin-bottom: 20px; }
+.nav-group > p { margin: 0 0 9px; color: #bdcbbf; font-size: 9px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
+.nav-item { display: flex; width: 100%; align-items: center; gap: 13px; border: 0; border-radius: 8px; background: transparent; padding: 11px 14px; color: #edf0ed; font-size: 12px; text-align: left; transition: .16s ease; }
+.nav-item svg { width: 16px; height: 16px; }
+.nav-item:hover { background: rgb(255 255 255 / 8%); }
+.nav-item.active { background: #b84e36; color: white; box-shadow: 0 6px 18px rgb(9 24 15 / 15%); }
+.sidebar-bottom { margin-top: auto; padding: 18px 20px 25px; }
+.sidebar-bottom > p { margin: 0 0 28px; }
+.admin-mini { display: flex; align-items: center; gap: 11px; border-top: 1px solid rgb(255 255 255 / 9%); padding: 19px 0 11px; font-size: 11px; }
+.admin-mini b, .admin-mini small { display: block; }
+.admin-mini small { margin-top: 3px; color: #b8c5bb; }
+.avatar { display: grid; width: 40px; height: 40px; flex: none; place-items: center; border-radius: 50%; background: #e7ece3; color: #466050; font-size: 11px; font-weight: 600; }
+.avatar.dark { width: 38px; height: 38px; background: #365743; color: white; }
+.logout { padding-left: 0; margin-top: 5px; }
+
+.main-column { min-width: 0; min-height: 100vh; }
+.topbar { position: sticky; top: 0; z-index: 25; display: flex; height: 70px; align-items: center; justify-content: space-between; border-bottom: 1px solid #ded8cb; background: rgb(248 245 238 / 94%); padding: 0 22px; backdrop-filter: blur(12px); }
+.topbar-title { display: flex; align-items: center; gap: 13px; }
+.topbar-title h1 { margin: 0; font-family: "Libre Caslon Display", Georgia, serif; font-size: 23px; font-weight: 400; }
+.topbar-title > span { display: none; border-left: 1px solid #ddd6ca; padding-left: 13px; color: #928c84; font-size: 10px; }
+.menu-button { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid #ded8cb; border-radius: 7px; background: transparent; color: #284532; }
+.menu-button svg { width: 20px; }
+.topbar-tools { display: flex; align-items: center; gap: 9px; }
+.header-search { display: none; width: 290px; height: 42px; align-items: center; gap: 9px; border: 1px solid #ddd4c6; border-radius: 10px; background: #fffdf9; padding: 0 14px; }
+.header-search svg { width: 16px; color: #8b877f; }
+.header-search input { width: 100%; border: 0; outline: 0; background: transparent; font-size: 12px; }
+.bell-button { position: relative; display: grid; width: 42px; height: 42px; place-items: center; border: 0; border-left: 1px solid #ded8cb; background: transparent; }
+.bell-button svg { width: 18px; }
+.bell-button i { position: absolute; top: 8px; right: 7px; width: 5px; height: 5px; border-radius: 50%; background: #b84e36; }
+.profile-wrap { position: relative; }
+.profile-button { display: flex; align-items: center; gap: 10px; border: 0; background: transparent; color: #2d352f; }
+.profile-button svg { width: 15px; }
+.profile-name { display: none; font-size: 12px; }
+.profile-menu { position: absolute; top: 53px; right: 0; width: 155px; overflow: hidden; border: 1px solid #ded8cb; border-radius: 9px; background: #fffdf9; box-shadow: 0 14px 35px rgb(43 36 24 / 14%); }
+.profile-menu button { display: block; width: 100%; border: 0; background: transparent; padding: 11px 14px; color: #364139; font-size: 12px; text-align: left; }
+.profile-menu button:hover { background: #f1eadf; }
+
+.content { width: 100%; max-width: 1480px; margin: 0 auto; padding: 30px 22px 26px; }
+.page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.page-heading p, .modal-heading p { margin: 0 0 10px; color: #af4632; font-size: 9px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
+.page-heading h2 { margin: 0; font-family: "Libre Caslon Display", Georgia, serif; font-size: 38px; font-weight: 400; line-height: 1; }
+.page-heading > div > span { display: block; margin-top: 10px; color: #817b73; font-size: 12px; }
+.add-button { display: none; align-items: center; gap: 9px; border: 0; border-radius: 10px; background: #b84e36; padding: 14px 21px; color: white; font-size: 12px; font-weight: 600; transition: .18s ease; }
+.add-button:hover { background: #993e2b; transform: translateY(-1px); }
+.add-button svg { width: 16px; }
+
+.filters { display: grid; gap: 13px; margin-top: 26px; border: 1px solid #ded4c4; border-radius: 14px; background: #eee7db; padding: 16px; }
+.filters label, .view-filter { display: flex; min-width: 0; flex-direction: column; gap: 7px; color: #323a34; font-size: 11px; font-weight: 600; }
+.filters select, .search-field > div { width: 100%; height: 43px; border: 1px solid #ddd4c7; border-radius: 9px; outline: 0; background: #fffdf9; padding: 0 13px; color: #4a4f4b; font-size: 12px; font-weight: 400; }
+.filters select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a4f4b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
+.search-field > div { display: flex; align-items: center; gap: 9px; }
+.search-field svg { width: 16px; color: #928d85; }
+.search-field input { width: 100%; border: 0; outline: 0; background: transparent; }
+.filters select:focus, .search-field > div:focus-within { border-color: #b84e36; box-shadow: 0 0 0 3px rgb(184 78 54 / 9%); }
+.view-filter > div { display: flex; gap: 4px; height: 43px; border: 1px solid #ddd4c7; border-radius: 9px; background: #fffdf9; padding: 4px; }
+.view-filter button { display: grid; width: 39px; place-items: center; border: 0; border-radius: 6px; background: transparent; color: #8b867e; }
+.view-filter button.active { background: #b84e36; color: white; }
+.view-filter svg { width: 17px; }
+
+.result-bar { display: flex; align-items: center; justify-content: space-between; margin: 25px 0 20px; color: #8d877f; font-size: 10px; }
+.result-bar b { color: #313b34; font-size: 11px; }
+.result-bar span:nth-child(2) { display: none; }
+.instrument-grid { display: grid; gap: 18px; }
+.instrument-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border: 1px solid #ddd3c2; border-radius: 13px; background: #eee6d8; transition: transform .18s ease, box-shadow .18s ease; }
+.instrument-card:hover { transform: translateY(-2px); box-shadow: 0 13px 30px rgb(62 45 28 / 10%); }
+.instrument-card > img { width: 100%; height: 210px; object-fit: cover; filter: saturate(.82) contrast(.96); }
+.instrument-card > .house-image-placeholder { display: grid; width: 100%; height: 210px; place-items: center; background: #e8dfd0; color: #817b73; font-size: 12px; }
+.card-content { display: flex; min-height: 221px; flex: 1; flex-direction: column; padding: 18px 18px 0; }
+.card-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #b34732; font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.status { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; background: #e7ece3; padding: 6px 10px; color: #415c4a; font-size: 9px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+.status i { width: 5px; height: 5px; border-radius: 50%; background: #29583c; }
+.status.draft { background: #f4f1eb; color: #8b867e; }
+.status.draft i { background: #99938b; }
+.card-content h3 { margin: 16px 0 8px; font-family: "Libre Caslon Display", Georgia, serif; font-size: 24px; font-weight: 400; line-height: 1; }
+.card-description { margin: 0; color: #766f66; font-size: 11px; line-height: 1.65; }
+.updated { margin: 13px 0; color: #928b82; font-size: 10px; }
+.preview-link { display: flex; width: 100%; align-items: center; justify-content: space-between; border: 0; border-top: 1px solid #ddd3c3; background: transparent; padding: 13px 0 16px; color: #b34732; font-size: 11px; font-weight: 600; text-align: left; }
+.preview-link svg { width: 16px; transition: transform .15s; }
+.preview-link:hover svg { transform: translateX(3px); }
+.card-actions { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #d8cebd; background: #e9e1d3; padding: 0 18px; }
+.card-actions button { display: flex; align-items: center; gap: 7px; border: 0; background: transparent; padding: 12px 0; color: #294432; font-size: 11px; font-weight: 500; }
+.card-actions button svg { width: 14px; }
+.card-actions button.danger { color: #b34732; }
+.list-view { grid-template-columns: 1fr !important; }
+.list-card { display: flex; flex-direction: column; }
+.list-card .card-content { min-height: 0; padding: 20px 20px 0; }
+
+.empty-state { border: 1px dashed #cfc4b3; border-radius: 14px; padding: 65px 20px; color: #7d776e; text-align: center; }
+.empty-state > svg { width: 30px; margin: auto; }
+.empty-state h3 { margin: 14px 0 6px; font-family: "Libre Caslon Display", Georgia, serif; color: #304035; font-size: 24px; font-weight: 400; }
+.empty-state p { font-size: 12px; }
+.empty-state button { border: 1px solid #b84e36; border-radius: 8px; background: transparent; padding: 9px 14px; color: #b84e36; font-size: 11px; }
+.pagination-wrap { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-top: 30px; color: #8e877f; font-size: 10px; }
+.pagination-wrap p { margin: 0; }
+.pagination { display: flex; align-items: center; gap: 7px; }
+.pagination button { width: 38px; height: 38px; border: 1px solid #ddd5c9; border-radius: 9px; background: transparent; color: #494d49; font-size: 11px; }
+.pagination button.active { border-color: #b84e36; background: #b84e36; color: white; }
+.pagination span { padding: 0 5px; }
+footer { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid #ded8cb; padding: 18px 22px; color: #948e86; font-size: 9px; }
+
+.modal-backdrop { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: rgb(19 30 23 / 58%); padding: 20px; backdrop-filter: blur(3px); }
+.modal { width: min(460px, 100%); border-radius: 15px; background: #f8f5ee; padding: 24px; box-shadow: 0 25px 70px rgb(0 0 0 / 25%); }
+.modal-heading { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 23px; }
+.modal-heading h3 { margin: 0; font-family: "Libre Caslon Display", Georgia, serif; font-size: 29px; font-weight: 400; }
+.modal-heading button { border: 0; background: transparent; }
+.modal-heading svg { width: 20px; }
+.modal > label { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; font-size: 11px; font-weight: 600; }
+.modal input, .modal select { height: 44px; border: 1px solid #d9d0c3; border-radius: 8px; outline: 0; background: white; padding: 0 12px; font-size: 12px; font-weight: 400; }
+.modal input:focus { border-color: #b84e36; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 25px; }
+.modal-actions button { border: 1px solid #d4ccbf; border-radius: 8px; background: transparent; padding: 10px 15px; color: #555a56; font-size: 11px; }
+.modal-actions button.save { border-color: #b84e36; background: #b84e36; color: white; }
+.toast { position: fixed; right: 20px; bottom: 20px; z-index: 80; display: flex; align-items: center; gap: 10px; border-radius: 9px; background: #203f2e; padding: 13px 17px; color: white; box-shadow: 0 15px 35px rgb(22 37 27 / 25%); font-size: 11px; animation: toast-in .25s ease both; }
+.toast i { width: 7px; height: 7px; border-radius: 50%; background: #d19071; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(10px); } }
+
+@media (min-width: 640px) {
+  .content { padding: 35px 30px 30px; }
+  .topbar { padding: 0 30px; }
+  .topbar-title > span, .profile-name { display: block; }
+  .add-button { display: flex; }
+  .filters { grid-template-columns: 1fr 1fr; }
+  .search-field { grid-column: 1 / -1; }
+  .view-filter { grid-column: span 2; }
+  .instrument-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pagination-wrap, footer { flex-direction: row; justify-content: space-between; }
+}
+
+@media (min-width: 1024px) {
+  .sidebar { transform: none; }
+  .main-column { margin-left: 258px; }
+  .menu-button { display: none; }
+  .header-search { display: flex; }
+  .filters { grid-template-columns: minmax(260px, 2.2fr) minmax(130px, .9fr) minmax(150px, 1fr) minmax(130px, .8fr) auto; }
+  .search-field, .view-filter { grid-column: auto; }
+  .result-bar span:nth-child(2) { display: block; }
+}
+
+@media (min-width: 1280px) {
+  .content { padding: 35px 32px 30px; }
+  .instrument-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 639px) {
+  .topbar-title h1 { font-size: 20px; }
+  .page-heading h2 { font-size: 34px; }
+  .profile-button .avatar { width: 34px; height: 34px; }
+  .result-bar span:last-child { display: none; }
+  .list-card { display: flex; }
+}

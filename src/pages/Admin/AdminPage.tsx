@@ -720,6 +720,10 @@ export default function MusikPage() {
         close={() => setSidebarOpen(false)}
         activeItem={isHousePage ? "Rumah Adat" : "Lagu Daerah"}
         onSelect={(label) => {
+          if (label === "Dashboard") {
+            navigate("/dashboard")
+            return
+          }
           if (label === "Rumah Adat") {
             navigate("/admin/rumah-adat")
             return

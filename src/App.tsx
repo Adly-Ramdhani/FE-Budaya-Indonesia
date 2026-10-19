@@ -6,6 +6,7 @@ import DetailView from "./components/DetailView"
 import LaguPage from "./pages/LaguPage"
 import LoginPage from "./pages/LoginPage"
 import AdminPage from "./pages/Admin/AdminPage"
+import AdminDashboard from "./pages/AdminDashboard"
 
 function AdminRoute() {
   const location = useLocation()
@@ -31,6 +32,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/admin/musik" element={<AdminRoute />} />
       <Route path="/admin/rumah-adat" element={<AdminRoute />} />
+       <Route path="/dashboard" element={<AdminDashboard/>} />
 
     </Routes>
   )

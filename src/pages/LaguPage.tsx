@@ -1,6 +1,6 @@
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 import { Link } from "react-router-dom"
-import styles from "../JelajahiLagu.module.css"
+import styles from "./styles/JelajahiLagu.module.css";
 
 const API_URL = import.meta.env.VITE_API_URL
 

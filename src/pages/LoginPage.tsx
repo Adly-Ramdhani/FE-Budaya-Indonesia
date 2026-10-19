@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Diamond,
   ShieldCheck,
@@ -7,11 +8,13 @@ import {
   EyeOff,
   ArrowLeft,
 } from "lucide-react";
-import "../Login.css";
+import "./styles/Login.css";
 
 const API_URL = import.meta.env.VITE_API_URL
 
 export default function LoginPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
   const [email, setEmail] = useState("");
@@ -64,7 +67,12 @@ export default function LoginPage() {
       storage.setItem("auth_token", token);
       if (user) storage.setItem("auth_user", JSON.stringify(user));
 
-      window.location.href = "/dashboard"; // ganti dengan navigate("/dashboard") jika pakai react-router
+      const from = location.state?.from;
+      const destination =
+        typeof from?.pathname === "string" && from.pathname.startsWith("/admin/")
+          ? `${from.pathname}${from.search ?? ""}${from.hash ?? ""}`
+          : "/admin/musik";
+      navigate(destination, { replace: true });
     } catch (err) {
       setError(
         err instanceof TypeError

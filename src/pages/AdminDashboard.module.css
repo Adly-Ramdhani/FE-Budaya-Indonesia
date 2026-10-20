@@ -33,7 +33,7 @@
   position: sticky;
   top: 0;
   display: flex;
-  flex: 0 0 252px;
+  flex: 0 0 272px;
   flex-direction: column;
   height: 100vh;
   min-height: 720px;
@@ -45,20 +45,20 @@
   scrollbar-width: thin;
 }
 
-.brand { display: flex; align-items: center; gap: 11px; color: #f6f1e7; text-decoration: none; font-family: "Libre Caslon Display", Georgia, serif; font-size: 18px; white-space: nowrap; }
-.brandMark { display: grid; width: 27px; height: 27px; place-items: center; transform: rotate(45deg); }
-.brandMark svg { transform: rotate(-45deg); color: #b5402b; }
-.sidebarLabel { margin-top: 28px; border-bottom: 1px solid rgb(255 255 255 / 12%); padding: 0 0 22px; color: #c0c9bd; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.brand { display: flex; align-items: center; gap: 11px; color: #f6f1e7; text-decoration: none; font-family: "Playfair Display", Georgia, serif; font-size: 18px; white-space: nowrap; }
+.brandMark { display: grid; width: 27px; height: 27px; place-items: center; }
+.brandMark svg { color: #f6f1e7; }
+.sidebarLabel { margin-top: 28px; border-bottom: 1px solid rgb(255 255 255 / 12%); padding: 0 0 22px; color: #c0c9bd; font-size: 11px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
 .collapseButton { position: absolute; top: 71px; right: 21px; display: grid; width: 32px; height: 32px; place-items: center; border: 0; border-radius: 9px; background: rgb(255 255 255 / 10%); color: #e8eee6; }
 .navigation { display: flex; flex-direction: column; gap: 18px; padding-top: 20px; }
 .navGroup { display: flex; flex-direction: column; gap: 4px; }
-.groupLabel { margin: 0 0 5px; color: #b9c7bb; font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
-.navItem { display: flex; min-height: 42px; align-items: center; gap: 12px; border: 0; border-radius: 10px; background: transparent; padding: 0 13px; color: #f2f0e8; text-align: left; transition: background .16s ease, color .16s ease; }
+.groupLabel { margin: 0 0 5px; color: #b9c7bb; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.navItem { display: flex; min-height: 45px; align-items: center; gap: 12px; border: 0; border-radius: 10px; background: transparent; padding: 0 13px; color: #f2f0e8; text-align: left; text-decoration: none; transition: background .16s ease, color .16s ease; }
 .navItem svg { flex: 0 0 auto; }
 .navItem:hover { background: rgb(255 255 255 / 9%); }
 .navActive, .navActive:hover { background: var(--red); color: #fff8ed; }
 .sidebarBottom { margin-top: auto; padding-top: 24px; }
-.sidebarMotto { margin: 0 0 22px; color: #d7dfd4; font-family: "Libre Caslon Display", Georgia, serif; font-size: 20px; line-height: 1.12; }
+.sidebarMotto { margin: 0 0 22px; color: #d7dfd4; font-family: "Playfair Display", Georgia, serif; font-size: 18px; line-height: 1.35; }
 .sidebarUser { display: flex; align-items: center; gap: 11px; border-top: 1px solid rgb(255 255 255 / 13%); padding: 18px 0 13px; }
 .sidebarUser > span:last-child { display: flex; flex-direction: column; gap: 3px; }
 .sidebarUser b { color: #faf7ef; font-size: 12px; font-weight: 600; }
@@ -70,7 +70,7 @@
 .main { min-width: 0; flex: 1; }
 .topbar { position: sticky; z-index: 5; top: 0; display: flex; height: 78px; align-items: center; gap: 28px; border-bottom: 1px solid var(--line); background: var(--cream); padding: 0 30px; color: var(--ink); }
 .breadcrumb { display: flex; min-width: 0; align-items: center; gap: 12px; white-space: nowrap; }
-.breadcrumb > span { color: var(--green); font-family: "Libre Caslon Display", Georgia, serif; font-size: 25px; }
+.breadcrumb > span { color: var(--green); font-family: "Playfair Display", Georgia, serif; font-size: 24px; font-weight: 600; }
 .breadcrumb i { width: 1px; height: 20px; background: var(--line); }
 .breadcrumb small { overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; }
 .searchBox { display: flex; width: min(300px, 32vw); height: 46px; align-items: center; gap: 10px; margin-left: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); padding: 0 12px; color: var(--muted); }
@@ -97,12 +97,12 @@
 .profilePopover a { display: flex; align-items: center; gap: 8px; margin-top: 11px; border-top: 1px solid var(--line); padding-top: 12px; color: var(--red); text-decoration: none; }
 .mobileMenu { display: none; border: 0; background: transparent; color: var(--green); }
 
-.content { max-width: 1700px; margin: 0 auto; padding: 30px 30px 18px; }
+.content { max-width: 1600px; margin: 0 auto; padding: 32px 32px 18px; }
 .notice { display: flex; align-items: center; gap: 9px; margin-bottom: 16px; border: 1px solid #cbd9c8; border-radius: 9px; background: #edf3e9; padding: 10px 13px; color: #33573c; font-size: 12px; }
 .notice > button { display: grid; margin-left: auto; border: 0; background: none; color: inherit; }
 .welcome { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin: 0 0 29px; }
 .eyebrow { margin: 0 0 8px; color: var(--red); font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
-.welcome h1 { margin: 0; color: var(--green); font-family: "Libre Caslon Display", Georgia, serif; font-size: 41px; font-weight: 400; letter-spacing: -.025em; line-height: 1.15; }
+.welcome h1 { margin: 0; color: var(--green); font-family: "Playfair Display", Georgia, serif; font-size: 40px; font-weight: 600; letter-spacing: -.025em; line-height: 1.15; }
 .welcomeText { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
 .welcomeAction { display: flex; align-items: flex-end; flex-direction: column; gap: 12px; }
 .welcomeAction > span { color: var(--muted); font-size: 12px; }
@@ -125,7 +125,7 @@
 .chartPanel, .quickPanel, .tablePanel { overflow: hidden; border: 1px solid var(--line); border-radius: 16px; }
 .chartPanel { background: var(--paper); padding: 24px 23px 16px; }
 .panelHeader { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-.panelHeader h2, .quickPanel h2, .tableHeader h2 { margin: 0; color: var(--green); font-family: "Libre Caslon Display", Georgia, serif; font-size: 25px; font-weight: 400; line-height: 1.15; }
+.panelHeader h2, .quickPanel h2, .tableHeader h2 { margin: 0; color: var(--green); font-family: "Playfair Display", Georgia, serif; font-size: 24px; font-weight: 500; line-height: 1.2; }
 .panelHeader p, .quickPanel > p, .tableHeader p { margin: 7px 0 0; color: var(--muted); font-size: 11px; }
 .selectWrap { position: relative; display: flex; width: 114px; height: 35px; flex: 0 0 auto; align-items: center; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); padding: 0 10px; color: var(--muted); }
 .selectWrap select { width: 100%; appearance: none; border: 0; outline: 0; background: transparent; color: inherit; font-size: 11px; }
@@ -197,7 +197,7 @@
 .modal { width: min(100%, 470px); border: 1px solid #e4dacb; border-radius: 16px; background: var(--paper); padding: 23px; box-shadow: 0 24px 60px rgb(0 0 0 / 28%); }
 .modalHeader { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 21px; }
 .modalKicker { color: var(--red); font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-.modalHeader h2 { margin: 5px 0 0; color: var(--green); font-family: "Libre Caslon Display", Georgia, serif; font-size: 27px; font-weight: 400; }
+.modalHeader h2 { margin: 5px 0 0; color: var(--green); font-family: "Playfair Display", Georgia, serif; font-size: 27px; font-weight: 500; }
 .closeButton { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid var(--line); border-radius: 8px; background: var(--cream); color: var(--ink); }
 .formLabel { display: flex; flex-direction: column; gap: 7px; margin-bottom: 15px; color: #514c43; font-size: 11px; font-weight: 700; }
 .formLabel input, .formLabel select { height: 43px; border: 1px solid var(--line); border-radius: 8px; background: var(--cream); padding: 0 12px; color: var(--ink); font-size: 12px; }
@@ -212,13 +212,13 @@
 
 @media (min-width: 1600px) {
   .sidebar { flex-basis: 270px; padding-right: 24px; padding-left: 24px; }
-  .content { padding-right: 38px; padding-left: 38px; }
+  .content { padding-right: 32px; padding-left: 32px; }
   .statCard { min-height: 188px; padding: 19px; }
 }
 
 @media (max-width: 1200px) {
-  .sidebar { flex-basis: 224px; padding-right: 17px; padding-left: 17px; }
-  .content { padding-right: 22px; padding-left: 22px; }
+  .sidebar { flex-basis: 238px; padding-right: 18px; padding-left: 18px; }
+  .content { padding-right: 24px; padding-left: 24px; }
   .topbar { gap: 18px; padding-right: 22px; padding-left: 22px; }
   .statsGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .statCard { min-height: 152px; }

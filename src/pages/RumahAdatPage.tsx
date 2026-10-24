@@ -12,6 +12,8 @@ type House = {
   image?: string
 }
 
+const ITEMS_PER_PAGE = 6
+
 /* ---------- Data dari database (API) ---------- */
 
 function resolveImage(image?: string) {
@@ -152,6 +154,8 @@ export default function RumahAdatPage() {
   const [region, setRegion] = useState("Semua daerah")
   const [category, setCategory] = useState("Semua kategori")
   const [sort, setSort] = useState("Pilihan Jelajahin")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [selectedHouse, setSelectedHouse] = useState<House | null>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -182,10 +186,26 @@ export default function RumahAdatPage() {
         (category === "Semua kategori" || house.category === category)
       )
     })
-    return sort === "Nama A–Z"
-      ? [...result].sort((a, b) => a.name.localeCompare(b.name))
-      : result
+    if (sort === "Nama A–Z") {
+      return [...result].sort((a, b) => a.name.localeCompare(b.name))
+    }
+    if (sort === "Nama Z–A") {
+      return [...result].sort((a, b) => b.name.localeCompare(a.name))
+    }
+    return result
   }, [houses, category, query, region, sort])
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredHouses.length / ITEMS_PER_PAGE),
+  )
+  const paginatedHouses = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE
+    return filteredHouses.slice(start, start + ITEMS_PER_PAGE)
+  }, [currentPage, filteredHouses])
+  const startIdx =
+    filteredHouses.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1
+  const endIdx = Math.min(currentPage * ITEMS_PER_PAGE, filteredHouses.length)
 
   const scrollToExplore = () =>
     document.getElementById("jelajah")?.scrollIntoView({ behavior: "smooth" })
@@ -312,7 +332,10 @@ export default function RumahAdatPage() {
               Mau menjelajah rumah adat apa?
               <input
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => {
+                  setQuery(event.target.value)
+                  setCurrentPage(1)
+                }}
                 className="filter-input"
                 placeholder="Cari rumah adat atau daerah asal..."
               />
@@ -323,7 +346,10 @@ export default function RumahAdatPage() {
               <select
                 className="filter-input"
                 value={region}
-                onChange={(event) => setRegion(event.target.value)}
+                onChange={(event) => {
+                  setRegion(event.target.value)
+                  setCurrentPage(1)
+                }}
               >
                 {regions.map((item) => (
                   <option key={item}>{item}</option>
@@ -348,7 +374,10 @@ export default function RumahAdatPage() {
                 {regions.map((item) => (
                   <button
                     key={item}
-                    onClick={() => setRegion(item)}
+                    onClick={() => {
+                      setRegion(item)
+                      setCurrentPage(1)
+                    }}
                     className={`region-button ${
                       region === item ? "active" : ""
                     }`}
@@ -383,7 +412,9 @@ export default function RumahAdatPage() {
                     Temukan rumah adat Nusantara
                   </h2>
                   <p className="mt-1 text-[13px] text-[#776f67]">
-                    {filteredHouses.length} rumah adat ditemukan
+                    {loading
+                      ? "Memuat rumah adat dari database..."
+                      : `Menampilkan ${startIdx}–${endIdx} dari ${filteredHouses.length} rumah adat`}
                   </p>
                 </div>
                 <label className="flex items-center gap-2 text-[12px] text-[#776f67]">
@@ -391,10 +422,14 @@ export default function RumahAdatPage() {
                   <select
                     className="bg-transparent font-medium text-[#312b27] outline-none"
                     value={sort}
-                    onChange={(event) => setSort(event.target.value)}
+                    onChange={(event) => {
+                      setSort(event.target.value)
+                      setCurrentPage(1)
+                    }}
                   >
                     <option>Pilihan Jelajahin</option>
                     <option>Nama A–Z</option>
+                    <option>Nama Z–A</option>
                   </select>
                 </label>
               </div>
@@ -404,7 +439,10 @@ export default function RumahAdatPage() {
                   {categories.map((item) => (
                     <button
                       key={item}
-                      onClick={() => setCategory(item)}
+                      onClick={() => {
+                        setCategory(item)
+                        setCurrentPage(1)
+                      }}
                       className={`category-pill ${
                         category === item ? "active" : ""
                       }`}
@@ -424,9 +462,9 @@ export default function RumahAdatPage() {
                 </p>
               )}
 
-              {!loading && !error && filteredHouses.length > 0 && (
+              {!loading && !error && paginatedHouses.length > 0 && (
                 <div className="mt-2 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                  {filteredHouses.map((house) => (
+                  {paginatedHouses.map((house) => (
                     <article className="dish-card group" key={house.id}>
                       <div className="h-[210px] overflow-hidden sm:h-[190px] xl:h-[205px]">
                         <HouseImage src={house.image} alt={house.name} />
@@ -442,7 +480,11 @@ export default function RumahAdatPage() {
                         <p className="mt-3 text-[13px] leading-5 text-[#716a62]">
                           {house.description}
                         </p>
-                        <button className="card-link mt-auto">
+                        <button
+                          className="card-link mt-auto"
+                          type="button"
+                          onClick={() => setSelectedHouse(house)}
+                        >
                           Kenali rumah adat <ArrowRight />
                         </button>
                       </div>
@@ -465,6 +507,7 @@ export default function RumahAdatPage() {
                       setQuery("")
                       setRegion("Semua daerah")
                       setCategory("Semua kategori")
+                      setCurrentPage(1)
                     }}
                   >
                     Atur ulang filter
@@ -472,26 +515,112 @@ export default function RumahAdatPage() {
                 </div>
               )}
 
-              <div className="mt-10 text-center">
-                <p className="text-[12px] text-[#8a8179]">
-                  Menampilkan {filteredHouses.length} rumah adat · Masih banyak
-                  warisan untuk dikenali
-                </p>
-                <button
-                  className="secondary-button mt-4"
-                  onClick={() => setCategory("Semua kategori")}
-                >
-                  Jelajahi lebih banyak rumah adat
-                </button>
-                <p className="mt-4 text-[11px] text-[#a09890]">
-                  Katalog akan terus diperbarui dengan kekayaan rumah adat
-                  Indonesia.
-                </p>
-              </div>
+              {totalPages > 1 && (
+                <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-[#ded3c4] pt-5 sm:flex-row">
+                  <span className="text-[12px] text-[#776f67]">
+                    Halaman {currentPage} dari {totalPages} · {ITEMS_PER_PAGE} rumah adat per halaman
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={currentPage === 1}
+                      onClick={() =>
+                        setCurrentPage((page) => Math.max(1, page - 1))
+                      }
+                      className="grid h-9 w-9 place-items-center rounded-lg border border-[#d9cebe] text-[#312b27] transition hover:border-[#b84c37] disabled:cursor-not-allowed disabled:opacity-40"
+                      aria-label="Halaman sebelumnya"
+                    >
+                      <span aria-hidden="true">‹</span>
+                    </button>
+                    {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+                      (page) => (
+                        <button
+                          key={page}
+                          type="button"
+                          onClick={() => setCurrentPage(page)}
+                          aria-current={page === currentPage ? "page" : undefined}
+                          className={`grid h-9 min-w-9 place-items-center rounded-lg border px-2 text-xs transition ${
+                            page === currentPage
+                              ? "border-[#b84c37] bg-[#b84c37] text-white"
+                              : "border-[#d9cebe] text-[#312b27] hover:border-[#b84c37]"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      ),
+                    )}
+                    <button
+                      type="button"
+                      disabled={currentPage === totalPages}
+                      onClick={() =>
+                        setCurrentPage((page) => Math.min(totalPages, page + 1))
+                      }
+                      className="grid h-9 w-9 place-items-center rounded-lg border border-[#d9cebe] text-[#312b27] transition hover:border-[#b84c37] disabled:cursor-not-allowed disabled:opacity-40"
+                      aria-label="Halaman berikutnya"
+                    >
+                      <span aria-hidden="true">›</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <p className="mt-8 text-center text-[11px] text-[#a09890]">
+                Katalog akan terus diperbarui dengan kekayaan rumah adat Indonesia.
+              </p>
             </div>
           </div>
         </section>
       </main>
+      {selectedHouse && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="house-detail-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-5 backdrop-blur-sm"
+          onClick={() => setSelectedHouse(null)}
+        >
+          <div
+            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[#d9cebe] bg-[#fffcf6] p-6 shadow-2xl sm:p-7"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setSelectedHouse(null)}
+              className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-[#fffcf6]/90 text-lg text-[#6e7268] hover:text-[#253b31]"
+              aria-label="Tutup detail rumah adat"
+            >
+              ×
+            </button>
+            <div className="mb-5 h-52 overflow-hidden rounded-xl bg-[#eee7da]">
+              <HouseImage src={selectedHouse.image} alt={selectedHouse.name} />
+            </div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#ad5036]">
+              {[selectedHouse.category, selectedHouse.region]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
+            <h2
+              id="house-detail-title"
+              className="mb-3 font-['DM_Serif_Display',Georgia,serif] text-3xl text-[#253b31]"
+            >
+              {selectedHouse.name}
+            </h2>
+            <p className="text-sm leading-relaxed text-[#555]">
+              {selectedHouse.description ||
+                "Informasi mengenai rumah adat ini belum tersedia."}
+            </p>
+            <div className="mt-6 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setSelectedHouse(null)}
+                className="rounded-lg bg-[#ad5036] px-5 py-2 text-xs font-semibold text-white transition hover:opacity-90"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

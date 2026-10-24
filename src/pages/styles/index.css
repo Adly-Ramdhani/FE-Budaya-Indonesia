@@ -646,7 +646,7 @@ h1 {
 
 .culture-section--dark {
   background: var(--dark);
-  color: #f8f2e5;
+  color: #c5c3bf;
 }
 
 .section-intro {
@@ -689,7 +689,7 @@ h1 {
 }
 
 .section-intro--dark .intro-copy p {
-  color: #bec9c1;
+  color: #ebf2e9;
 }
 
 .split {

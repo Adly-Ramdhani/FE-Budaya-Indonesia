@@ -1,37 +1,24 @@
-import { useEffect, useMemo, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import "../styles/musik.admin.css";
 import Icon from "../../components/Admin/AdminIcon"
-import MusikView from "../../components/Admin/MusikView"
-import Rumahadat from "../../components/Admin/Rumahadat"
+import { AdminSidebar, AdminTopbar } from "../../components/Admin/AdminChrome"
+import MusikView from "../../components/Admin/ Musik/MusikView"
+import CreateMusik from "../../components/Admin/ Musik/CreateMusik"
+import EditeMusik from "../../components/Admin/ Musik/EditeMusik"
+import Rumahadat, {
+  type TraditionalHouse,
+} from "../../components/Admin/Rumahadat"
 import type { Instrument, Island, Province } from "../../components/Admin/types"
+import styles from "../AdminDashboard.module.css"
 
 const rawApiUrl = import.meta.env.VITE_API_URL || ""
 const API_URL = rawApiUrl.trim().replace(/\/$/, "")
 
-const menuGroups = [
-  {
-    title: "",
-    items: ["Dashboard"],
-  },
-  {
-    title: "Koleksi Budaya",
-    items: [
-      "Lagu Daerah",
-      "Tarian",
-      "Alat Musik",
-      "Senjata Tradisional",
-      "Pakaian Adat",
-      "Rumah Adat",
-      "Makanan",
-      "Daerah & Provinsi",
-    ],
-  },
-  {
-    title: "Pengelolaan",
-    items: ["Media Library", "Pengguna Admin", "Pengaturan"],
-  },
-]
+const API_HEADERS = {
+  Accept: "application/json",
+  "ngrok-skip-browser-warning": "true",
+}
 
 function formatProvince(name?: string): string {
   if (!name) return "Nusantara"
@@ -129,104 +116,23 @@ function getApiUrl(path: string): string {
   return API_URL ? `${API_URL}${path}` : path
 }
 
-function Sidebar({
-  open,
-  close,
-  onSelect,
-  activeItem,
-}: {
-  open: boolean
-  close: () => void
-  onSelect: (label: string) => void
-  activeItem: string
-}) {
+function getAuthToken(): string | null {
   return (
-    <>
-      {open && (
-        <button
-          className="sidebar-scrim"
-          onClick={close}
-          aria-label="Tutup menu"
-        />
-      )}
-      <aside className={`sidebar ${open ? "is-open" : ""}`}>
-        <div className="brand">
-          <span className="brand-mark">
-            <i />
-            <i />
-          </span>
-          <span className="font-serif text-[19px]">Budaya Indonesia</span>
-          <button
-            className="ml-auto lg:hidden"
-            onClick={close}
-            aria-label="Tutup sidebar"
-          >
-            <Icon name="close" className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="panel-label">
-          <span>Panel Admin</span>
-          <span className="panel-key">⌘</span>
-        </div>
-
-        <nav className="sidebar-nav">
-          {menuGroups.map((group, index) => (
-            <div className="nav-group" key={group.title || index}>
-              {group.title && <p>{group.title}</p>}
-              {group.items.map((item) => (
-                <button
-                  key={item}
-                  className={`nav-item ${
-                    item === activeItem ||
-                    (activeItem === "Lagu Daerah" && item === "")
-                      ? "active"
-                      : ""
-                  }`}
-                  onClick={() => {
-                    onSelect(item)
-                    close()
-                  }}
-                >
-                  <Icon
-                    name={
-                      item === "Dashboard"
-                        ? "grid"
-                        : item === "Lagu Daerah"
-                          ? "music"
-                          : "book"
-                    }
-                  />
-                  <span>{item}</span>
-                </button>
-              ))}
-            </div>
-          ))}
-        </nav>
-
-        <div className="sidebar-bottom">
-          <p className="font-serif text-[17px] leading-6 text-[#d5dbd2]">
-            Mengenal warisan,
-            <br />
-            menghargai keberagaman.
-          </p>
-          <div className="admin-mini">
-            <span className="avatar dark">RP</span>
-            <span>
-              <b>Rani Pratiwi</b>
-              <small>Administrator</small>
-            </span>
-          </div>
-          <button
-            className="nav-item logout"
-            onClick={() => onSelect("Anda telah keluar")}
-          >
-            <Icon name="logout" />
-            <span>Logout</span>
-          </button>
-        </div>
-      </aside>
-    </>
+    localStorage.getItem("auth_token") || sessionStorage.getItem("auth_token")
   )
+}
+
+async function fetchProvincesByIsland(
+  islandId: string,
+  signal: AbortSignal,
+): Promise<Province[]> {
+  const params = new URLSearchParams({ island_id: islandId })
+  const res = await fetch(getApiUrl(`/api/provinces?${params.toString()}`), {
+    signal,
+    headers: API_HEADERS,
+  })
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`)
+  return getApiList<Province>(await res.json())
 }
 
 const audioBlobCache = new Map<string, string>()
@@ -366,7 +272,10 @@ function NgrokAudio({
 export default function MusikPage() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { songId } = useParams<{ songId: string }>()
   const isHousePage = location.pathname === "/admin/rumah-adat"
+  const isCreateSongPage = location.pathname === "/admin/musik/tambah"
+  const isEditSongPage = Boolean(songId)
   const [items, setItems] = useState<Instrument[]>([])
   const [loading, setLoading] = useState(true)
   const [apiError, setApiError] = useState<string | null>(null)
@@ -387,24 +296,152 @@ export default function MusikPage() {
   const [status, setStatus] = useState("Semua status")
   const [view, setView] = useState<"grid" | "list">("grid")
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [profileOpen, setProfileOpen] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
   const [previewItem, setPreviewItem] = useState<Instrument | null>(null)
   const [toast, setToast] = useState("")
+  const [saving, setSaving] = useState(false)
+  const [editSong, setEditSong] = useState<Instrument | null>(null)
+  const [editLoading, setEditLoading] = useState(false)
+  const [editError, setEditError] = useState<string | null>(null)
+  const pendingProvinceId = useRef("")
 
   const [newTitle, setNewTitle] = useState("")
   const [newIslandId, setNewIslandId] = useState("")
-  const [newProvince, setNewProvince] = useState("")
+  const [newProvinceId, setNewProvinceId] = useState("")
   const [newComposer, setNewComposer] = useState("")
   const [newLanguage, setNewLanguage] = useState("")
   const [newDescription, setNewDescription] = useState("")
   const [newLyrics, setNewLyrics] = useState("")
+  const [newAudio, setNewAudio] = useState<File | null>(null)
+  const newIslandIdRef = useRef(newIslandId)
+  newIslandIdRef.current = newIslandId
 
   const notify = (message: string) => {
     setToast(message)
     window.setTimeout(() => setToast(""), 2600)
   }
 
+  const resetForm = () => {
+    setNewTitle("")
+    setNewIslandId("")
+    setNewProvinceId("")
+    setNewComposer("")
+    setNewLanguage("")
+    setNewDescription("")
+    setNewLyrics("")
+    setNewAudio(null)
+  }
+
+  useEffect(() => {
+    if (!songId) {
+      setEditSong(null)
+      setEditError(null)
+      setEditLoading(false)
+      return
+    }
+
+    const controller = new AbortController()
+
+    async function loadSongForEdit() {
+      setEditLoading(true)
+      setEditError(null)
+      try {
+        const response = await fetch(getApiUrl(`/api/songs/${songId}`), {
+          signal: controller.signal,
+          headers: API_HEADERS,
+        })
+        if (!response.ok) {
+          throw new Error(`Gagal memuat lagu (HTTP ${response.status})`)
+        }
+
+        const payload: unknown = await response.json()
+        const songData =
+          payload &&
+          typeof payload === "object" &&
+          "data" in payload &&
+          payload.data &&
+          typeof payload.data === "object"
+            ? payload.data
+            : payload
+        if (!songData || typeof songData !== "object" || Array.isArray(songData)) {
+          throw new Error("Format data lagu tidak valid.")
+        }
+
+        const song = songData as Record<string, unknown>
+        const provinceData =
+          song.province && typeof song.province === "object"
+            ? (song.province as Record<string, unknown>)
+            : null
+        const islandData =
+          provinceData?.island && typeof provinceData.island === "object"
+            ? (provinceData.island as Record<string, unknown>)
+            : null
+        const provinceId = song.province_id ?? provinceData?.id
+        const islandId = provinceData?.island_id ?? islandData?.id
+        const provinceName =
+          typeof provinceData?.name === "string" ? provinceData.name : ""
+        const title =
+          typeof song.title === "string"
+            ? song.title
+            : typeof song.name === "string"
+              ? song.name
+              : ""
+        const audio = song.audio_url ?? song.audio
+        const audioUrl = typeof audio === "string" ? resolveAudioUrl(audio) : undefined
+
+        setNewTitle(title)
+        const resolvedIslandId = islandId == null ? "" : String(islandId)
+        pendingProvinceId.current =
+          resolvedIslandId && resolvedIslandId !== newIslandIdRef.current
+            ? provinceId == null
+              ? ""
+              : String(provinceId)
+            : ""
+        setNewIslandId(resolvedIslandId)
+        setNewProvinceId(provinceId == null ? "" : String(provinceId))
+        setNewComposer(typeof song.composer === "string" ? song.composer : "")
+        setNewLanguage(typeof song.language === "string" ? song.language : "")
+        setNewDescription(
+          typeof song.description === "string" ? song.description : "",
+        )
+        setNewLyrics(typeof song.lyrics === "string" ? song.lyrics : "")
+        setNewAudio(null)
+        setEditSong({
+          id: typeof song.id === "string" || typeof song.id === "number" ? song.id : songId,
+          name: title,
+          province_id: provinceId == null ? undefined : String(provinceId),
+          province: formatProvince(provinceName),
+          region: getRegionByProvince(provinceName),
+          status: typeof song.status === "string" ? song.status : "draft",
+          composer: typeof song.composer === "string" ? song.composer : "",
+          language: typeof song.language === "string" ? song.language : "",
+          description: typeof song.description === "string" ? song.description : "",
+          lyrics: typeof song.lyrics === "string" ? song.lyrics : "",
+          audio: audioUrl,
+          audio_url: audioUrl,
+          updated: formatDate(
+            typeof song.updated_at === "string"
+              ? song.updated_at
+              : typeof song.created_at === "string"
+                ? song.created_at
+                : undefined,
+          ),
+        })
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") return
+        const message =
+          error instanceof Error ? error.message : "Gagal memuat data lagu."
+        console.error("Gagal memuat lagu untuk diedit:", error)
+        setEditError(message)
+      } finally {
+        if (!controller.signal.aborted) setEditLoading(false)
+      }
+    }
+
+    void loadSongForEdit()
+    return () => controller.abort()
+  }, [songId])
+
+  // Daftar pulau
   useEffect(() => {
     if (isHousePage) {
       setIslandsLoading(false)
@@ -417,15 +454,11 @@ export default function MusikPage() {
       try {
         const res = await fetch(getApiUrl("/api/islands"), {
           signal: controller.signal,
-          headers: {
-            Accept: "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
+          headers: API_HEADERS,
         })
         if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`)
 
-        const list = getApiList<Island>(await res.json())
-        setIslands(list)
+        setIslands(getApiList<Island>(await res.json()))
         setIslandsError(null)
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") return
@@ -442,9 +475,10 @@ export default function MusikPage() {
     return () => controller.abort()
   }, [isHousePage])
 
+  // Provinsi untuk form tambah lagu
   useEffect(() => {
     setProvinces([])
-    setNewProvince("")
+    setNewProvinceId("")
     setProvincesError(null)
 
     if (!newIslandId) {
@@ -453,41 +487,37 @@ export default function MusikPage() {
     }
 
     const controller = new AbortController()
+    setProvincesLoading(true)
 
-    async function fetchProvinces() {
-      setProvincesLoading(true)
-      try {
-        const query = new URLSearchParams({ island_id: newIslandId })
-        const res = await fetch(
-          getApiUrl(`/api/provinces?${query.toString()}`),
-          {
-            signal: controller.signal,
-            headers: {
-              Accept: "application/json",
-              "ngrok-skip-browser-warning": "true",
-            },
-          },
-        )
-        if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`)
-
-        const list = getApiList<Province>(await res.json())
-        setProvinces(list)
-        setProvincesError(null)
-      } catch (err) {
+    fetchProvincesByIsland(newIslandId, controller.signal)
+      .then((loadedProvinces) => {
+        setProvinces(loadedProvinces)
+        const pendingId = pendingProvinceId.current
+        if (
+          pendingId &&
+          loadedProvinces.some(
+            (item) => String(item.id) === String(pendingId),
+          )
+        ) {
+          setNewProvinceId(pendingId)
+          pendingProvinceId.current = ""
+        }
+      })
+      .catch((err) => {
         if (err instanceof Error && err.name === "AbortError") return
-        const message =
-          err instanceof Error ? err.message : "Gagal memuat daftar provinsi"
         console.error("Gagal mengambil provinsi dari API:", err)
-        setProvincesError(message)
-      } finally {
+        setProvincesError(
+          err instanceof Error ? err.message : "Gagal memuat daftar provinsi",
+        )
+      })
+      .finally(() => {
         if (!controller.signal.aborted) setProvincesLoading(false)
-      }
-    }
+      })
 
-    fetchProvinces()
     return () => controller.abort()
   }, [newIslandId])
 
+  // Provinsi untuk filter daftar
   useEffect(() => {
     setFilterProvinces([])
     setProvince("Semua provinsi")
@@ -499,37 +529,21 @@ export default function MusikPage() {
     }
 
     const controller = new AbortController()
+    setFilterProvincesLoading(true)
 
-    async function fetchFilterProvinces() {
-      setFilterProvincesLoading(true)
-      try {
-        const query = new URLSearchParams({ island_id: filterIslandId })
-        const res = await fetch(
-          getApiUrl(`/api/provinces?${query.toString()}`),
-          {
-            signal: controller.signal,
-            headers: {
-              Accept: "application/json",
-              "ngrok-skip-browser-warning": "true",
-            },
-          },
-        )
-        if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`)
-
-        setFilterProvinces(getApiList<Province>(await res.json()))
-        setFilterProvincesError(null)
-      } catch (err) {
+    fetchProvincesByIsland(filterIslandId, controller.signal)
+      .then(setFilterProvinces)
+      .catch((err) => {
         if (err instanceof Error && err.name === "AbortError") return
-        const message =
-          err instanceof Error ? err.message : "Gagal memuat daftar provinsi"
         console.error("Gagal mengambil provinsi filter dari API:", err)
-        setFilterProvincesError(message)
-      } finally {
+        setFilterProvincesError(
+          err instanceof Error ? err.message : "Gagal memuat daftar provinsi",
+        )
+      })
+      .finally(() => {
         if (!controller.signal.aborted) setFilterProvincesLoading(false)
-      }
-    }
+      })
 
-    fetchFilterProvinces()
     return () => controller.abort()
   }, [filterIslandId])
 
@@ -544,13 +558,9 @@ export default function MusikPage() {
     async function fetchSongs() {
       setLoading(true)
       try {
-        const url = API_URL ? `${API_URL}/api/songs` : "/api/songs"
-        const res = await fetch(url, {
+        const res = await fetch(getApiUrl("/api/songs"), {
           signal: controller.signal,
-          headers: {
-            Accept: "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
+          headers: API_HEADERS,
         })
 
         if (!res.ok) {
@@ -575,9 +585,10 @@ export default function MusikPage() {
             return {
               id: item.id ?? Date.now(),
               name: title,
+              province_id: item.province_id,
               province: provinceName,
               region: getRegionByProvince(provinceName),
-              status: item.status ?? "Terbit",
+              status: item.status ?? "draft",
               composer: item.composer ?? "Traditional",
               language: item.language ?? "",
               description:
@@ -599,7 +610,7 @@ export default function MusikPage() {
           setApiError(err.message || "Gagal memuat API")
         }
       } finally {
-        setLoading(false)
+        if (!controller.signal.aborted) setLoading(false)
       }
     }
 
@@ -625,33 +636,228 @@ export default function MusikPage() {
     [items, province, query, region, status],
   )
 
-  const addSong = (event: React.FormEvent) => {
+  // Simpan lagu baru ke backend: POST /api/songs
+  const addSong = async (event: React.FormEvent) => {
     event.preventDefault()
-    if (!newTitle.trim()) return
+    if (saving) return
+    if (!newTitle.trim() || !newProvinceId) return
 
-    const newItem: Instrument = {
-      id: Date.now(),
-      name: newTitle.trim(),
-      province: newProvince,
-      region: getRegionByProvince(newProvince),
-      status: "Draf",
-      composer: newComposer.trim() || "Traditional",
-      language: newLanguage.trim() || "",
-      description:
-        newDescription.trim() ||
-        "Deskripsi lagu daerah baru siap dilengkapi oleh tim redaksi.",
-      lyrics: newLyrics.trim(),
-      updated: "Hari ini",
+    const submitter = (event.nativeEvent as SubmitEvent).submitter
+    const songStatus =
+      submitter instanceof HTMLButtonElement && submitter.value === "published"
+        ? "published"
+        : "draft"
+
+    const formData = new FormData()
+    formData.append("province_id", newProvinceId)
+    formData.append("title", newTitle.trim())
+    formData.append("status", songStatus)
+    if (newComposer.trim()) formData.append("composer", newComposer.trim())
+    if (newLanguage.trim()) formData.append("language", newLanguage.trim())
+    if (newDescription.trim()) formData.append("description", newDescription.trim())
+    if (newLyrics.trim()) formData.append("lyrics", newLyrics.trim())
+    if (newAudio) formData.append("audio", newAudio)
+
+    const token = getAuthToken()
+
+    setSaving(true)
+    try {
+      const res = await fetch(getApiUrl("/api/songs"), {
+        method: "POST",
+        // jangan set Content-Type, browser mengaturnya otomatis untuk FormData
+        headers: {
+          ...API_HEADERS,
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
+      })
+
+      const json = await res.json().catch(() => ({}))
+
+      if (!res.ok) {
+        const firstError =
+          json?.data && typeof json.data === "object"
+            ? (Object.values(json.data).flat()[0] as string | undefined)
+            : undefined
+        throw new Error(firstError || json.message || `HTTP ${res.status}`)
+      }
+
+      // pakai data dari server (id asli, audio_url asli), bukan Date.now()
+      const saved = json.data
+      const provinceName = formatProvince(
+        saved.province?.name ??
+          provinces.find((p) => String(p.id) === String(newProvinceId))?.name,
+      )
+      const audioUrl = saved.audio_url
+        ? resolveAudioUrl(saved.audio_url)
+        : undefined
+
+      const newItem: Instrument = {
+        id: saved.id,
+        name: saved.title,
+        province_id: saved.province_id,
+        province: provinceName,
+        region: getRegionByProvince(provinceName),
+        status: saved.status ?? songStatus,
+        composer: saved.composer ?? "Traditional",
+        language: saved.language ?? "",
+        description:
+          saved.description ??
+          "Warisan melodi tradisional dan cerita Nusantara.",
+        lyrics: saved.lyrics ?? "",
+        audio: audioUrl,
+        audio_url: audioUrl,
+        updated: formatDate(saved.updated_at ?? saved.created_at),
+      }
+
+      setItems((current) => [newItem, ...current])
+      resetForm()
+      navigate("/admin/musik", { replace: true })
+      notify(
+        `Lagu "${newItem.name}" berhasil disimpan sebagai ${songStatus === "draft" ? "draf" : "published"}`,
+      )
+    } catch (err) {
+      console.error("Gagal menyimpan lagu:", err)
+      notify(
+        `Gagal menyimpan lagu: ${err instanceof Error ? err.message : "kesalahan tidak diketahui"}`,
+      )
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const updateSong = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (saving || !songId || !editSong || !newTitle.trim() || !newProvinceId) {
+      return
     }
 
-    setItems((current) => [newItem, ...current])
-    setNewTitle("")
-    setNewComposer("")
-    setNewLanguage("")
-    setNewDescription("")
-    setNewLyrics("")
-    setModalOpen(false)
-    notify(`Lagu "${newItem.name}" berhasil ditambahkan ke daftar draf`)
+    const submitter = (event.nativeEvent as SubmitEvent).submitter
+    const songStatus =
+      submitter instanceof HTMLButtonElement && submitter.value === "published"
+        ? "published"
+        : submitter instanceof HTMLButtonElement && submitter.value === "draft"
+          ? "draft"
+          : editSong.status
+    const formData = new FormData()
+    formData.append("_method", "PUT")
+    formData.append("province_id", newProvinceId)
+    formData.append("title", newTitle.trim())
+    formData.append("status", songStatus)
+    if (newComposer.trim()) formData.append("composer", newComposer.trim())
+    if (newLanguage.trim()) formData.append("language", newLanguage.trim())
+    if (newDescription.trim()) formData.append("description", newDescription.trim())
+    if (newLyrics.trim()) formData.append("lyrics", newLyrics.trim())
+    if (newAudio) formData.append("audio", newAudio)
+
+    const token = getAuthToken()
+    setSaving(true)
+    try {
+      const response = await fetch(getApiUrl(`/api/songs/${songId}`), {
+        method: "POST",
+        headers: {
+          ...API_HEADERS,
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
+      })
+      const payload: unknown = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        const responseData =
+          payload && typeof payload === "object" && "data" in payload
+            ? payload.data
+            : null
+        const errors =
+          responseData && typeof responseData === "object"
+            ? Object.values(responseData).flat()
+            : []
+        const message =
+          payload && typeof payload === "object" && "message" in payload
+            ? payload.message
+            : undefined
+        throw new Error(
+          (typeof errors[0] === "string" ? errors[0] : undefined) ??
+            (typeof message === "string" ? message : undefined) ??
+            `HTTP ${response.status}`,
+        )
+      }
+
+      const savedData =
+        payload &&
+        typeof payload === "object" &&
+        "data" in payload &&
+        payload.data &&
+        typeof payload.data === "object"
+          ? (payload.data as Record<string, unknown>)
+          : {}
+      const savedProvince =
+        savedData.province && typeof savedData.province === "object"
+          ? (savedData.province as Record<string, unknown>)
+          : null
+      const savedAudio = savedData.audio_url ?? savedData.audio
+      const audioUrl =
+        typeof savedAudio === "string" ? resolveAudioUrl(savedAudio) : editSong.audio
+      const savedProvinceId = savedData.province_id ?? newProvinceId
+      const provinceName =
+        typeof savedProvince?.name === "string"
+          ? savedProvince.name
+          : provinces.find((item) => String(item.id) === String(savedProvinceId))
+              ?.name ?? editSong.province
+      const updatedSong: Instrument = {
+        ...editSong,
+        id:
+          typeof savedData.id === "string" || typeof savedData.id === "number"
+            ? savedData.id
+            : editSong.id,
+        name:
+          typeof savedData.title === "string"
+            ? savedData.title
+            : newTitle.trim(),
+        province_id: String(savedProvinceId),
+        province: formatProvince(provinceName),
+        region: getRegionByProvince(provinceName),
+        status:
+          typeof savedData.status === "string" ? savedData.status : songStatus,
+        composer:
+          typeof savedData.composer === "string"
+            ? savedData.composer
+            : newComposer.trim(),
+        language:
+          typeof savedData.language === "string"
+            ? savedData.language
+            : newLanguage.trim(),
+        description:
+          typeof savedData.description === "string"
+            ? savedData.description
+            : newDescription.trim(),
+        lyrics:
+          typeof savedData.lyrics === "string"
+            ? savedData.lyrics
+            : newLyrics.trim(),
+        audio: audioUrl,
+        audio_url: audioUrl,
+        updated: formatDate(
+          typeof savedData.updated_at === "string"
+            ? savedData.updated_at
+            : new Date().toISOString(),
+        ),
+      }
+
+      setItems((current) =>
+        current.map((item) => (String(item.id) === songId ? updatedSong : item)),
+      )
+      setEditSong(updatedSong)
+      setNewAudio(null)
+      navigate("/admin/musik", { replace: true })
+      notify(`Lagu "${updatedSong.name}" berhasil diperbarui`)
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Kesalahan tidak diketahui"
+      console.error("Gagal memperbarui lagu:", error)
+      notify(`Gagal memperbarui lagu: ${message}`)
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleDeleteSong = async (selected: Instrument) => {
@@ -663,19 +869,12 @@ export default function MusikPage() {
     notify(`Menghapus "${selected.name}" dari server...`)
 
     try {
-      const url = API_URL
-        ? `${API_URL}/api/songs/${selected.id}`
-        : `/api/songs/${selected.id}`
+      const token = getAuthToken()
 
-      const token =
-        localStorage.getItem("auth_token") ||
-        sessionStorage.getItem("auth_token")
-
-      const res = await fetch(url, {
+      const res = await fetch(getApiUrl(`/api/songs/${selected.id}`), {
         method: "DELETE",
         headers: {
-          Accept: "application/json",
-          "ngrok-skip-browser-warning": "true",
+          ...API_HEADERS,
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       })
@@ -713,11 +912,56 @@ export default function MusikPage() {
     }
   }
 
+  const handleDeleteHouse = async (selected: TraditionalHouse) => {
+    if (
+      !window.confirm(
+        `Apakah Anda yakin ingin menghapus rumah adat "${selected.name}"?`,
+      )
+    ) {
+      return false
+    }
+
+    try {
+      const token = getAuthToken()
+      const response = await fetch(
+        getApiUrl(`/api/traditional-houses/${selected.id}`),
+        {
+          method: "DELETE",
+          headers: {
+            ...API_HEADERS,
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        },
+      )
+
+      if (!response.ok) {
+        const errorData: unknown = await response.json().catch(() => ({}))
+        const message =
+          errorData &&
+          typeof errorData === "object" &&
+          "message" in errorData &&
+          typeof errorData.message === "string"
+            ? errorData.message
+            : `Gagal menghapus rumah adat (HTTP ${response.status})`
+        throw new Error(message)
+      }
+
+      notify(`Rumah adat "${selected.name}" berhasil dihapus dari database`)
+      return true
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Gagal menghapus rumah adat"
+      console.error("Gagal menghapus rumah adat dari API:", err)
+      notify(`Gagal menghapus rumah adat: ${message}`)
+      return false
+    }
+  }
+
   return (
-    <div className="admin-shell">
-      <Sidebar
+    <div className={styles.shell}>
+      <AdminSidebar
         open={sidebarOpen}
-        close={() => setSidebarOpen(false)}
+        onClose={() => setSidebarOpen(false)}
         activeItem={isHousePage ? "Rumah Adat" : "Lagu Daerah"}
         onSelect={(label) => {
           if (label === "Dashboard") {
@@ -736,75 +980,111 @@ export default function MusikPage() {
         }}
       />
 
-      <div className="main-column">
-        <header className="topbar">
-          <div className="topbar-title">
-            <button
-              className="menu-button"
-              onClick={() => setSidebarOpen(true)}
-              aria-label="Buka menu"
-            >
-              <Icon name="menu" />
-            </button>
-            <h1>{isHousePage ? "Rumah Adat" : "Lagu Daerah"}</h1>
-            <span>Ruang redaksi</span>
-          </div>
-          <div className="topbar-tools">
-            <label className="header-search">
-              <Icon name="search" />
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={
-                  isHousePage
-                    ? "Cari rumah adat atau daerah..."
-                    : "Cari lagu, lirik, atau daerah..."
-                }
-              />
-            </label>
-            <button
-              className="bell-button"
-              onClick={() => notify("Tidak ada notifikasi baru")}
-              aria-label="Notifikasi"
-            >
-              <Icon name="bell" />
-              <i />
-            </button>
-            <div className="profile-wrap">
-              <button
-                className="profile-button"
-                onClick={() => setProfileOpen((value) => !value)}
-              >
-                <span className="avatar">RP</span>
-                <span className="profile-name">Rani Pratiwi</span>
-                <Icon name="chevron" />
-              </button>
-              {profileOpen && (
-                <div className="profile-menu">
-                  <button onClick={() => notify("Profil dibuka")}>
-                    Profil saya
-                  </button>
-                  <button onClick={() => notify("Pengaturan dibuka")}>
-                    Pengaturan
-                  </button>
-                  <button onClick={() => notify("Anda telah keluar")}>
-                    Keluar
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
+      <main className={styles.main}>
+        <AdminTopbar
+          title={isHousePage ? "Rumah Adat" : "Lagu Daerah"}
+          search={query}
+          searchPlaceholder={
+            isHousePage
+              ? "Cari rumah adat atau daerah..."
+              : "Cari lagu, lirik, atau daerah..."
+          }
+          onSearchChange={setQuery}
+          onOpenMenu={() => setSidebarOpen(true)}
+        />
 
         {isHousePage ? (
           <Rumahadat
             apiUrl={API_URL}
             query={query}
             onQueryChange={setQuery}
+            onAction={notify}
+            onDeleteHouse={handleDeleteHouse}
+          />
+        ) : isEditSongPage ? (
+          editLoading ? (
+            <section className="content">
+              <p role="status">Memuat informasi lagu...</p>
+            </section>
+          ) : editError || !editSong ? (
+            <section className="content">
+              <div className="page-heading">
+                <div>
+                  <p>Koleksi Budaya / Pengelolaan Konten</p>
+                  <h2>Lagu tidak dapat dimuat</h2>
+                  <span role="alert">
+                    {editError ?? "Data lagu tidak ditemukan."}
+                  </span>
+                </div>
+              </div>
+              <button
+                className="add-button"
+                style={{ display: "inline-flex", marginTop: 24 }}
+                onClick={() => navigate("/admin/musik")}
+              >
+                Kembali ke daftar lagu
+              </button>
+            </section>
+          ) : (
+            <EditeMusik
+              islands={islands}
+              islandsError={islandsError}
+              islandsLoading={islandsLoading}
+              provinces={provinces}
+              provincesError={provincesError}
+              provincesLoading={provincesLoading}
+              title={newTitle}
+              islandId={newIslandId}
+              provinceId={newProvinceId}
+              composer={newComposer}
+              language={newLanguage}
+              description={newDescription}
+              lyrics={newLyrics}
+              audio={newAudio}
+              saving={saving}
+              onTitleChange={setNewTitle}
+              onIslandChange={setNewIslandId}
+              onProvinceChange={setNewProvinceId}
+              onComposerChange={setNewComposer}
+              onLanguageChange={setNewLanguage}
+              onDescriptionChange={setNewDescription}
+              onLyricsChange={setNewLyrics}
+              onAudioChange={setNewAudio}
+              onCancel={() => navigate("/admin/musik")}
+              onSubmit={updateSong}
+            />
+          )
+        ) : isCreateSongPage ? (
+          <CreateMusik
+            islands={islands}
+            islandsError={islandsError}
+            islandsLoading={islandsLoading}
+            provinces={provinces}
+            provincesError={provincesError}
+            provincesLoading={provincesLoading}
+            title={newTitle}
+            islandId={newIslandId}
+            provinceId={newProvinceId}
+            composer={newComposer}
+            language={newLanguage}
+            description={newDescription}
+            lyrics={newLyrics}
+            audio={newAudio}
+            saving={saving}
+            onTitleChange={setNewTitle}
+            onIslandChange={setNewIslandId}
+            onProvinceChange={setNewProvinceId}
+            onComposerChange={setNewComposer}
+            onLanguageChange={setNewLanguage}
+            onDescriptionChange={setNewDescription}
+            onLyricsChange={setNewLyrics}
+            onAudioChange={setNewAudio}
+            onCancel={() => navigate("/admin/musik")}
+            onSubmit={addSong}
           />
         ) : (
           <MusikView
-            apiUrl={API_URL ? `${API_URL}/api/songs` : "/api/songs"}
+            apiUrl={getApiUrl("/api/songs")}
             apiError={apiError}
             filterIslandId={filterIslandId}
             filterProvinces={filterProvinces}
@@ -815,7 +1095,8 @@ export default function MusikPage() {
             islandsError={islandsError}
             islandsLoading={islandsLoading}
             loading={loading}
-            onAddSong={() => setModalOpen(true)}
+            onAddSong={() => navigate("/admin/musik/tambah")}
+            onEditSong={(song) => navigate(`/admin/musik/${song.id}/edit`)}
             onDeleteSong={handleDeleteSong}
             onFilterIslandChange={(islandId) => {
               setFilterIslandId(islandId)
@@ -834,7 +1115,6 @@ export default function MusikPage() {
             onStatusChange={setStatus}
             onViewChange={setView}
             onProvinceChange={setProvince}
-            onAction={notify}
             province={province}
             query={query}
             region={region}
@@ -851,7 +1131,7 @@ export default function MusikPage() {
               : "Data Lagu Daerah · Dilengkapi lirik & audio"}
           </span>
         </footer>
-      </div>
+      </main>
 
       {/* Modal Pratinjau Lagu (Audio & Lirik) */}
       {previewItem && (
@@ -880,100 +1160,99 @@ export default function MusikPage() {
               </button>
             </div>
 
+            <div
+              style={{
+                display: "flex",
+                gap: 15,
+                fontSize: 12,
+                color: "#666",
+                marginBottom: 10,
+              }}
+            >
+              {previewItem.composer && (
+                <span>
+                  <b>Pencipta:</b> {previewItem.composer}
+                </span>
+              )}
+              {previewItem.language && (
+                <span>
+                  <b>Bahasa:</b> {previewItem.language}
+                </span>
+              )}
+              <span>
+                <b>Status:</b> {previewItem.status}
+              </span>
+            </div>
 
+            <p
+              style={{
+                fontSize: 13,
+                lineHeight: "1.6",
+                color: "#333",
+                marginBottom: 15,
+              }}
+            >
+              {previewItem.description}
+            </p>
+
+            {(previewItem.audio || previewItem.audio_url) && (
               <div
                 style={{
-                  display: "flex",
-                  gap: 15,
-                  fontSize: 12,
-                  color: "#666",
-                  marginBottom: 10,
-                }}
-              >
-                {previewItem.composer && (
-                  <span>
-                    <b>Pencipta:</b> {previewItem.composer}
-                  </span>
-                )}
-                {previewItem.language && (
-                  <span>
-                    <b>Bahasa:</b> {previewItem.language}
-                  </span>
-                )}
-                <span>
-                  <b>Status:</b> {previewItem.status}
-                </span>
-              </div>
-
-              <p
-                style={{
-                  fontSize: 13,
-                  lineHeight: "1.6",
-                  color: "#333",
+                  background: "#f0ebd8",
+                  padding: 12,
+                  borderRadius: 8,
                   marginBottom: 15,
                 }}
               >
-                {previewItem.description}
-              </p>
-
-              {(previewItem.audio || previewItem.audio_url) && (
-                <div
+                <span
                   style={{
-                    background: "#f0ebd8",
-                    padding: 12,
-                    borderRadius: 8,
-                    marginBottom: 15,
+                    display: "block",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "#28372d",
+                    marginBottom: 6,
                   }}
                 >
-                  <span
-                    style={{
-                      display: "block",
-                      fontSize: 12,
-                      fontWeight: 600,
-                      color: "#28372d",
-                      marginBottom: 6,
-                    }}
-                  >
-                    Dengarkan Audio:
-                  </span>
-                  <NgrokAudio
-                    src={(previewItem.audio || previewItem.audio_url)!}
-                    autoLoad
-                  />
-                </div>
-              )}
+                  Dengarkan Audio:
+                </span>
+                <NgrokAudio
+                  src={(previewItem.audio || previewItem.audio_url)!}
+                  autoLoad
+                />
+              </div>
+            )}
 
-              {previewItem.lyrics && (
-                <div>
-                  <span
-                    style={{
-                      display: "block",
-                      fontSize: 12,
-                      fontWeight: 600,
-                      color: "#28372d",
-                      marginBottom: 6,
-                    }}
-                  >
-                    Lirik Lagu:
-                  </span>
-                  <div
-                    style={{
-                      maxHeight: 160,
-                      overflowY: "auto",
-                      whiteSpace: "pre-line",
-                      padding: 12,
-                      borderRadius: 8,
-                      border: "1px solid #d9cebe",
-                      background: "#fff",
-                      fontSize: 12,
-                      lineHeight: "1.6",
-                      color: "#444",
-                    }}
-                  >
-                    {previewItem.lyrics}
-                  </div>
+            {previewItem.lyrics && (
+              <div>
+                <span
+                  style={{
+                    display: "block",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "#28372d",
+                    marginBottom: 6,
+                  }}
+                >
+                  Lirik Lagu:
+                </span>
+                <div
+                  style={{
+                    maxHeight: 160,
+                    overflowY: "auto",
+                    whiteSpace: "pre-line",
+                    padding: 12,
+                    borderRadius: 8,
+                    border: "1px solid #d9cebe",
+                    background: "#fff",
+                    fontSize: 12,
+                    lineHeight: "1.6",
+                    color: "#444",
+                  }}
+                >
+                  {previewItem.lyrics}
                 </div>
-              )}
+              </div>
+            )}
 
             <div className="modal-actions" style={{ marginTop: 20 }}>
               <button type="button" onClick={() => setPreviewItem(null)}>
@@ -985,162 +1264,7 @@ export default function MusikPage() {
       )}
 
       {/* Modal Tambah Lagu Baru */}
-      {modalOpen && (
-        <div className="modal-backdrop" onMouseDown={() => setModalOpen(false)}>
-          <form
-            className="modal"
-            onSubmit={addSong}
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <div className="modal-heading">
-              <div>
-                <p>Koleksi Budaya</p>
-                <h3>Tambah Lagu Daerah</h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setModalOpen(false)}
-                aria-label="Tutup form"
-              >
-                <Icon name="close" />
-              </button>
-            </div>
-
-            <label>
-              Judul lagu
-              <input
-                autoFocus
-                value={newTitle}
-                onChange={(event) => setNewTitle(event.target.value)}
-                placeholder="Contoh: Bungong Jeumpa"
-                required
-              />
-            </label>
-
-            <label>
-              Pulau asal
-              <select
-                value={newIslandId}
-                onChange={(event) => setNewIslandId(event.target.value)}
-                required
-                disabled={islandsLoading || Boolean(islandsError)}
-              >
-                <option value="">
-                  {islandsLoading ? "Memuat pulau..." : "Pilih pulau"}
-                </option>
-                {islands.map((island) => (
-                  <option key={island.id} value={island.id}>
-                    {island.name}
-                  </option>
-                ))}
-              </select>
-              {islandsError && (
-                <span role="alert" style={{ color: "#af4632" }}>
-                  Gagal memuat pulau: {islandsError}
-                </span>
-              )}
-            </label>
-
-            <label>
-              Provinsi asal
-              <select
-                value={newProvince}
-                onChange={(event) => setNewProvince(event.target.value)}
-                required
-                disabled={!newIslandId || provincesLoading || Boolean(provincesError)}
-              >
-                <option value="">
-                  {!newIslandId
-                    ? "Pilih pulau terlebih dahulu"
-                    : provincesLoading
-                      ? "Memuat provinsi..."
-                      : "Pilih provinsi"}
-                </option>
-                {provinces.map((province) => (
-                  <option key={province.id} value={province.name}>
-                    {province.name}
-                  </option>
-                ))}
-              </select>
-              {provincesError && (
-                <span role="alert" style={{ color: "#af4632" }}>
-                  Gagal memuat provinsi: {provincesError}
-                </span>
-              )}
-              {!provincesLoading &&
-                !provincesError &&
-                newIslandId &&
-                provinces.length === 0 && (
-                  <span>Tidak ada provinsi untuk pulau ini.</span>
-                )}
-            </label>
-
-            <label>
-              Pencipta lagu
-              <input
-                value={newComposer}
-                onChange={(event) => setNewComposer(event.target.value)}
-                placeholder="Contoh: Traditional / Abraham Abduh"
-              />
-            </label>
-
-            <label>
-              Bahasa daerah
-              <input
-                value={newLanguage}
-                onChange={(event) => setNewLanguage(event.target.value)}
-                placeholder="Contoh: Bahasa Aceh / Bahasa Sunda"
-              />
-            </label>
-
-            <label>
-              Deskripsi & Makna
-              <textarea
-                value={newDescription}
-                onChange={(event) => setNewDescription(event.target.value)}
-                placeholder="Tuliskan latar belakang, makna, atau cerita di balik lagu ini..."
-                rows={3}
-                style={{
-                  width: "100%",
-                  border: "1px solid #d9cebe",
-                  borderRadius: 8,
-                  padding: 10,
-                  fontSize: 12,
-                  fontFamily: "inherit",
-                }}
-              />
-            </label>
-
-            <label>
-              Lirik lagu
-              <textarea
-                value={newLyrics}
-                onChange={(event) => setNewLyrics(event.target.value)}
-                placeholder="Masukkan lirik lagu..."
-                rows={4}
-                style={{
-                  width: "100%",
-                  border: "1px solid #d9cebe",
-                  borderRadius: 8,
-                  padding: 10,
-                  fontSize: 12,
-                  fontFamily: "inherit",
-                }}
-              />
-            </label>
-
-            <div className="modal-actions">
-              <button type="button" onClick={() => setModalOpen(false)}>
-                Batal
-              </button>
-              <button className="save" type="submit">
-                Simpan sebagai draf
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
+     
       {toast && (
         <div className="toast">
           <i />

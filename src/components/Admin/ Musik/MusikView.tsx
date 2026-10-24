@@ -1,5 +1,5 @@
-import AdminIcon from "./AdminIcon"
-import type { Instrument, Island, Province } from "./types"
+import AdminIcon from "../AdminIcon"
+import type { Instrument, Island, Province } from "../types"
 
 type MusikViewProps = {
   apiUrl: string
@@ -14,6 +14,7 @@ type MusikViewProps = {
   islandsLoading: boolean
   loading: boolean
   onAddSong: () => void
+  onEditSong: (song: Instrument) => void
   onDeleteSong: (song: Instrument) => void
   onFilterIslandChange: (islandId: string) => void
   onPreviewSong: (song: Instrument) => void
@@ -23,7 +24,6 @@ type MusikViewProps = {
   onStatusChange: (status: string) => void
   onViewChange: (view: "grid" | "list") => void
   onProvinceChange: (province: string) => void
-  onAction: (message: string) => void
   province: string
   query: string
   region: string
@@ -39,17 +39,27 @@ function formatProvince(name: string): string {
     .join(" ")
 }
 
+function formatStatus(status: string): string {
+  const normalized = status.toLocaleLowerCase("id-ID")
+  return normalized.charAt(0).toLocaleUpperCase("id-ID") + normalized.slice(1)
+}
+
+function isDraftStatus(status: string): boolean {
+  const normalized = status.toLocaleLowerCase("id-ID")
+  return normalized === "draft" || normalized === "draf"
+}
+
 function InstrumentCard({
   instrument,
   view,
   onPreview,
-  onAction,
+  onEdit,
   onDelete,
 }: {
   instrument: Instrument
   view: "grid" | "list"
   onPreview: (instrument: Instrument) => void
-  onAction: (message: string) => void
+  onEdit: (instrument: Instrument) => void
   onDelete: (instrument: Instrument) => void
 }) {
   return (
@@ -60,10 +70,10 @@ function InstrumentCard({
         <div className="card-meta">
           <span>{instrument.province}</span>
           <span
-            className={`status ${instrument.status === "Draf" ? "draft" : ""}`}
+            className={`status ${isDraftStatus(instrument.status) ? "draft" : ""}`}
           >
             <i />
-            {instrument.status}
+            {formatStatus(instrument.status)}
           </span>
         </div>
         <h3>{instrument.name}</h3>
@@ -95,7 +105,7 @@ function InstrumentCard({
         </button>
       </div>
       <div className="card-actions">
-        <button onClick={() => onAction(`${instrument.name} siap diedit`)}>
+        <button onClick={() => onEdit(instrument)}>
           <AdminIcon name="edit" /> Edit
         </button>
         <button className="danger" onClick={() => onDelete(instrument)}>
@@ -119,6 +129,7 @@ export default function MusikView({
   islandsLoading,
   loading,
   onAddSong,
+  onEditSong,
   onDeleteSong,
   onFilterIslandChange,
   onPreviewSong,
@@ -128,7 +139,6 @@ export default function MusikView({
   onStatusChange,
   onViewChange,
   onProvinceChange,
-  onAction,
   province,
   query,
   region,
@@ -218,9 +228,9 @@ export default function MusikView({
             value={status}
             onChange={(event) => onStatusChange(event.target.value)}
           >
-            <option>Semua status</option>
-            <option>Terbit</option>
-            <option>Draf</option>
+            <option value="Semua status">Semua status</option>
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
           </select>
         </label>
         <div className="view-filter">
@@ -286,7 +296,7 @@ export default function MusikView({
               instrument={song}
               view={view}
               onPreview={onPreviewSong}
-              onAction={onAction}
+              onEdit={onEditSong}
               onDelete={onDeleteSong}
             />
           ))}

@@ -71,7 +71,7 @@ export default function LoginPage() {
       const destination =
         typeof from?.pathname === "string" && from.pathname.startsWith("/admin/")
           ? `${from.pathname}${from.search ?? ""}${from.hash ?? ""}`
-          : "/admin/musik";
+          : "/dashboard";
       navigate(destination, { replace: true });
     } catch (err) {
       setError(

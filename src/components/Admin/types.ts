@@ -14,6 +14,7 @@ export type Province = {
 export type Instrument = {
   id: number | string
   name: string
+  province_id?: string
   province: string
   region: string
   status: string

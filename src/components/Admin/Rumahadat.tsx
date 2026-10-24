@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import AdminIcon from "./AdminIcon"
 
-type TraditionalHouse = {
+export type TraditionalHouse = {
   id: string | number
   name: string
   province: string
@@ -29,6 +29,8 @@ type RumahadatProps = {
   apiUrl: string
   query: string
   onQueryChange: (query: string) => void
+  onAction: (message: string) => void
+  onDeleteHouse: (house: TraditionalHouse) => Promise<boolean>
 }
 
 function resolveImage(image?: string, apiUrl?: string): string | undefined {
@@ -118,7 +120,17 @@ function HouseImage({ src, alt }: { src?: string; alt: string }) {
   )
 }
 
-function HouseCard({ house }: { house: TraditionalHouse }) {
+function HouseCard({
+  house,
+  onPreview,
+  onAction,
+  onDelete,
+}: {
+  house: TraditionalHouse
+  onPreview: (house: TraditionalHouse) => void
+  onAction: (message: string) => void
+  onDelete: (house: TraditionalHouse) => void
+}) {
   return (
     <article className="instrument-card">
       <HouseImage src={house.image} alt={house.name} />
@@ -129,6 +141,17 @@ function HouseCard({ house }: { house: TraditionalHouse }) {
         </div>
         <h3>{house.name}</h3>
         <p className="card-description">{house.description}</p>
+        <button className="preview-link" onClick={() => onPreview(house)}>
+          Lihat pratinjau <AdminIcon name="arrow" />
+        </button>
+      </div>
+      <div className="card-actions">
+        <button onClick={() => onAction(`${house.name} siap diedit`)}>
+          <AdminIcon name="edit" /> Edit
+        </button>
+        <button className="danger" onClick={() => onDelete(house)}>
+          <AdminIcon name="trash" /> Hapus
+        </button>
       </div>
     </article>
   )
@@ -138,6 +161,8 @@ export default function Rumahadat({
   apiUrl,
   query,
   onQueryChange,
+  onAction,
+  onDeleteHouse,
 }: RumahadatProps) {
   const [houses, setHouses] = useState<TraditionalHouse[]>([])
   const [loading, setLoading] = useState(true)
@@ -145,6 +170,25 @@ export default function Rumahadat({
   const [province, setProvince] = useState("Semua daerah")
   const [island, setIsland] = useState("Semua pulau")
   const [view, setView] = useState<"grid" | "list">("grid")
+  const [previewHouse, setPreviewHouse] = useState<TraditionalHouse | null>(
+    null,
+  )
+  const [deletingHouseId, setDeletingHouseId] = useState<string | number | null>(
+    null,
+  )
+
+  async function handleDeleteHouse(house: TraditionalHouse) {
+    if (deletingHouseId !== null) return
+    setDeletingHouseId(house.id)
+    try {
+      if (await onDeleteHouse(house)) {
+        setHouses((current) => current.filter((item) => item.id !== house.id))
+        if (previewHouse?.id === house.id) setPreviewHouse(null)
+      }
+    } finally {
+      setDeletingHouseId(null)
+    }
+  }
 
   useEffect(() => {
     const controller = new AbortController()
@@ -239,6 +283,18 @@ export default function Rumahadat({
             />
           </div>
         </label>
+          <label>
+          <span>Pulau</span>
+          <select
+            value={island}
+            onChange={(event) => setIsland(event.target.value)}
+          >
+            <option>Semua pulau</option>
+            {islands.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+        </label>
         <label>
           <span>Daerah</span>
           <select
@@ -247,18 +303,6 @@ export default function Rumahadat({
           >
             <option>Semua daerah</option>
             {provinces.map((item) => (
-              <option key={item}>{item}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          <span>Pulau</span>
-          <select
-            value={island}
-            onChange={(event) => setIsland(event.target.value)}
-          >
-            <option>Semua pulau</option>
-            {islands.map((item) => (
               <option key={item}>{item}</option>
             ))}
           </select>
@@ -308,7 +352,13 @@ export default function Rumahadat({
           className={`instrument-grid ${view === "list" ? "list-view" : ""}`}
         >
           {filteredHouses.map((house) => (
-            <HouseCard key={house.id} house={house} />
+            <HouseCard
+              key={house.id}
+              house={house}
+              onPreview={setPreviewHouse}
+              onAction={onAction}
+              onDelete={handleDeleteHouse}
+            />
           ))}
         </section>
       ) : (
@@ -336,6 +386,43 @@ export default function Rumahadat({
           <button aria-label="Halaman berikutnya">›</button>
         </div>
       </section>
+
+      {previewHouse && (
+        <div
+          className="modal-backdrop"
+          onMouseDown={() => setPreviewHouse(null)}
+        >
+          <div
+            className="modal"
+            style={{ maxWidth: 540 }}
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="modal-heading">
+              <div>
+                <p>
+                  {previewHouse.island} · {previewHouse.province}
+                </p>
+                <h3>{previewHouse.name}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewHouse(null)}
+                aria-label="Tutup pratinjau"
+              >
+                <AdminIcon name="close" />
+              </button>
+            </div>
+            {previewHouse.image && (
+              <div className="house-preview-image">
+                <HouseImage src={previewHouse.image} alt={previewHouse.name} />
+              </div>
+            )}
+            <p className="house-preview-description">
+              {previewHouse.description || "Deskripsi belum tersedia."}
+            </p>
+          </div>
+        </div>
+      )}
     </main>
   )
 }

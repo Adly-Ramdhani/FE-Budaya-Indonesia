@@ -251,27 +251,6 @@ type Story = {
 
 
 
-const instruments: Story[] = [
-  {
-    name: "Angklung",
-    region: "Jawa Barat",
-    description:
-      "Alat musik bambu yang dimainkan dengan digoyangkan. Tiap angklung menghasilkan nada tertentu, sehingga harmoni lahir dari kerja bersama.",
-  },
-  {
-    name: "Sasando",
-    region: "Nusa Tenggara Timur",
-    description:
-      "Alat musik petik dari Pulau Rote dengan tabung bambu dan resonator daun lontar berbentuk kipas. Bunyinya lembut dan berlapis.",
-  },
-  {
-    name: "Kolintang",
-    region: "Sulawesi Utara",
-    description:
-      "Alat musik bilah kayu masyarakat Minahasa yang dimainkan dengan pemukul, biasanya dalam ansambel dengan peran melodi dan iringan.",
-  },
-]
-
 function Brand() {
   return (
     <a className="brand" href="#top" aria-label="Budaya Indonesia">
@@ -590,11 +569,12 @@ function useStories(endpoint: string) {
         const list = Array.isArray(json) ? json : json.data
         setStories(
           (list ?? []).map((item: any) => ({
-            name: item.name,
-            region: item.province?.name ?? "",
-            label: item.province?.name,
+            name: item.name ?? item.title ?? "Tanpa nama",
+            region:
+              item.province?.name ?? item.province ?? item.region ?? "",
+            label: item.province?.name ?? item.province ?? item.region,
             description: truncate(item.description, 300),
-             image: item.image_url,
+            image: item.image_url ?? item.image,
           })),
         )
         setError(null)
@@ -679,6 +659,11 @@ export default function HomePage() {
   const [query, setQuery] = useState("")
   const [region, setRegion] = useState("Bali & Nusa Tenggara")
   const [province, setProvince] = useState("Nusa Tenggara Timur")
+  const {
+    stories: instruments,
+    loading: instrumentsLoading,
+    error: instrumentsError,
+  } = useStories("/api/musical-instruments")
   const { stories: weapons, loading: weaponsLoading, error: weaponsError } =
     useStories("/api/traditional-weapons")
   const { stories: houses, loading: housesLoading, error: housesError } =
@@ -1038,7 +1023,16 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           />
           <div className="split split--reverse">
             <div>
-              <StoryList stories={instruments} />
+              {instrumentsLoading && <p>Memuat data alat musik...</p>}
+              {instrumentsError && (
+                <p>Gagal memuat data alat musik: {instrumentsError}</p>
+              )}
+              {!instrumentsLoading &&
+                !instrumentsError &&
+                instruments.length === 0 && <p>Belum ada data alat musik.</p>}
+              {instruments.length > 0 && (
+                <StoryList stories={instruments.slice(0, 3)} />
+              )}
               <ArrowLink dark>Jelajahi alat musik</ArrowLink>
             </div>
             <FeatureImage

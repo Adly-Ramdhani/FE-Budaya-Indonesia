@@ -136,7 +136,7 @@
 .barColumn { position: relative; z-index: 1; display: flex; width: 15%; min-width: 40px; height: 100%; flex-direction: column; align-items: center; justify-content: flex-end; }
 .barColumn strong { margin-bottom: 8px; color: var(--green); font-size: 12px; font-variant-numeric: tabular-nums; }
 .barColumn .barValueAccent { color: var(--red); }
-.bar { width: min(56px, 72%); max-height: 150px; min-height: 18px; border-radius: 6px 6px 0 0; background: var(--green); }
+.bar { width: min(56px, 72%); max-height: 150px; border-radius: 6px 6px 0 0; background: var(--green); }
 .barColumn .barAccent { background: var(--red); }
 .barColumn > span { position: absolute; top: calc(100% + 11px); left: 50%; width: max-content; max-width: 120px; transform: translateX(-50%); color: var(--muted); font-size: 10px; text-align: center; }
 .chartNote { display: flex; align-items: center; gap: 8px; margin: 21px 0 0; color: var(--muted); font-size: 11px; }

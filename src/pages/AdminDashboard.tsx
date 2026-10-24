@@ -1,9 +1,8 @@
-import { useMemo, useState, type FormEvent } from "react"
+import { useEffect, useMemo, useState, type FormEvent } from "react"
+import { useNavigate } from "react-router-dom"
 import {
   ArrowDownRight,
   ArrowRight,
-  Bell,
-  BookOpen,
   Check,
   ChevronDown,
   ChevronLeft,
@@ -11,70 +10,189 @@ import {
   CircleHelp,
   Drum,
   House,
-  LogOut,
-  Menu,
   Music2,
   Plus,
   Search,
-  Shield,
   Shirt,
   Swords,
   Utensils,
-  Users,
   X,
   PersonStanding,
   ImagePlus,
-  Settings,
 } from "lucide-react"
 import styles from "./AdminDashboard.module.css"
+import { AdminSidebar, AdminTopbar } from "../components/Admin/AdminChrome"
 
 type ContentItem = {
-  id: number
+  id: string
   title: string
   description: string
   category: string
   province: string
-  status: "Terbit" | "Draf"
+  status: string
   date: string
+  sortDate: number
   image: string
 }
 
 const categories = [
-  { label: "Lagu Daerah", count: 128, change: 8, icon: Music2 },
-  { label: "Tarian", count: 96, change: 6, icon: PersonStanding },
-  { label: "Alat Musik", count: 74, change: 4, icon: Drum },
-  { label: "Senjata Tradisional", count: 52, change: 3, icon: Swords },
-  { label: "Pakaian Adat", count: 86, change: 5, icon: Shirt },
-  { label: "Rumah Adat", count: 64, change: 4, icon: House },
-  { label: "Makanan", count: 120, change: 9, icon: Utensils },
+  { label: "Lagu Daerah", endpoint: "/api/songs", icon: Music2 },
+  { label: "Tarian", endpoint: "/api/dances", icon: PersonStanding },
+  { label: "Alat Musik", endpoint: "/api/musical-instruments", icon: Drum },
+  { label: "Senjata Tradisional", endpoint: "/api/traditional-weapons", icon: Swords },
+  { label: "Pakaian Adat", icon: Shirt },
+  { label: "Rumah Adat", endpoint: "/api/traditional-houses", icon: House },
+  { label: "Makanan", endpoint: "/api/foods", icon: Utensils },
 ]
 
-const initialItems: ContentItem[] = [
-  { id: 1, title: "Bolelebo", description: "Lagu rakyat dari tanah Timor", category: "Lagu Daerah", province: "Nusa Tenggara Timur", status: "Terbit", date: "10 Okt 2026", image: "/assets/0552e.png" },
-  { id: 2, title: "Tari Saman", description: "Gerak dan kebersamaan masyarakat Gayo", category: "Tarian", province: "Aceh", status: "Terbit", date: "10 Okt 2026", image: "/assets/0f23d.png" },
-  { id: 3, title: "Sasando", description: "Dawai yang bernyanyi dari Pulau Rote", category: "Alat Musik", province: "Nusa Tenggara Timur", status: "Draf", date: "09 Okt 2026", image: "/assets/2489a.png" },
-  { id: 4, title: "Keris Jawa", description: "Warisan tempa dan makna simbolik", category: "Senjata Tradisional", province: "Jawa Tengah", status: "Terbit", date: "09 Okt 2026", image: "/assets/37149.png" },
-  { id: 5, title: "Tenun Ikat Flores", description: "Motif dan ingatan dalam setiap benang", category: "Pakaian Adat", province: "Nusa Tenggara Timur", status: "Draf", date: "08 Okt 2026", image: "/assets/3a211.png" },
-  { id: 6, title: "Rumah Tongkonan", description: "Rumah leluhur masyarakat Toraja", category: "Rumah Adat", province: "Sulawesi Selatan", status: "Terbit", date: "08 Okt 2026", image: "/assets/76c15.png" },
-  { id: 7, title: "Rendang Minangkabau", description: "Rasa yang dirawat lintas generasi", category: "Makanan", province: "Sumatra Barat", status: "Terbit", date: "07 Okt 2026", image: "/assets/7e922.png" },
+const islands = [
+  "Sumatra",
+  "Jawa",
+  "Bali",
+  "Nusa Tenggara",
+  "Kalimantan",
+  "Sulawesi",
+  "Maluku",
+  "Papua",
 ]
 
-const regions = [
-  { label: "Sumatra", value: 148 },
-  { label: "Jawa", value: 182 },
-  { label: "Bali & Nusa Tenggara", value: 96 },
-  { label: "Kalimantan", value: 62 },
-  { label: "Sulawesi", value: 78 },
-  { label: "Maluku & Papua", value: 54 },
-]
+const rawApiUrl = import.meta.env.VITE_API_URL || ""
+const API_URL = rawApiUrl.trim().replace(/\/$/, "")
 
-const sidebarGroups = [
-  { heading: "Koleksi budaya", items: categories.map(({ label, icon }) => ({ label, icon })) },
-  { heading: "Pengelolaan", items: [{ label: "Media Library", icon: ImagePlus }, { label: "Pengguna Admin", icon: Users }, { label: "Pengaturan", icon: Settings }] },
-]
+type CategoryCount = {
+  count: number | null
+  error: string | null
+  loading: boolean
+}
+
+function getResponseCount(payload: unknown): number {
+  if (Array.isArray(payload)) return payload.length
+  if (!payload || typeof payload !== "object") {
+    throw new Error("Format respons API tidak valid.")
+  }
+
+  const result = payload as {
+    data?: unknown
+    total?: unknown
+    meta?: { total?: unknown }
+  }
+  const total = result.meta?.total ?? result.total
+  if (typeof total === "number" && Number.isFinite(total)) return total
+  if (Array.isArray(result.data)) return result.data.length
+  throw new Error("Respons API tidak berisi jumlah atau daftar data.")
+}
+
+function getResponseItems(payload: unknown): Record<string, unknown>[] {
+  const list = Array.isArray(payload)
+    ? payload
+    : payload &&
+        typeof payload === "object" &&
+        "data" in payload &&
+        Array.isArray(payload.data)
+      ? payload.data
+      : null
+
+  if (!list) throw new Error("Respons API tidak berisi daftar konten.")
+  return list.filter(
+    (item): item is Record<string, unknown> =>
+      Boolean(item) && typeof item === "object" && !Array.isArray(item),
+  )
+}
+
+function getText(value: unknown): string {
+  if (typeof value === "string" || typeof value === "number") return String(value)
+  if (value && typeof value === "object" && "name" in value) {
+    return getText(value.name)
+  }
+  return ""
+}
+
+function getIslandByProvince(provinceName: string): string | null {
+  const province = provinceName.toLocaleLowerCase("id-ID")
+  if (
+    province.includes("aceh") ||
+    province.includes("sumat") ||
+    province.includes("riau") ||
+    province.includes("jambi") ||
+    province.includes("bengkulu") ||
+    province.includes("lampung") ||
+    province.includes("bangka")
+  ) {
+    return "Sumatra"
+  }
+  if (
+    province.includes("jawa") ||
+    province.includes("jakarta") ||
+    province.includes("banten") ||
+    province.includes("yogyakarta")
+  ) {
+    return "Jawa"
+  }
+  if (province.includes("bali")) return "Bali"
+  if (province.includes("nusa tenggara")) return "Nusa Tenggara"
+  if (province.includes("kalimantan")) return "Kalimantan"
+  if (province.includes("sulawesi") || province.includes("gorontalo")) {
+    return "Sulawesi"
+  }
+  if (province.includes("maluku")) return "Maluku"
+  if (province.includes("papua")) return "Papua"
+  return null
+}
+
+function formatItemDate(value: string): { label: string; timestamp: number } {
+  const timestamp = Date.parse(value)
+  if (!Number.isFinite(timestamp)) {
+    return { label: value || "—", timestamp: 0 }
+  }
+  return {
+    label: new Date(timestamp).toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }),
+    timestamp,
+  }
+}
+
+function mapApiItem(
+  item: Record<string, unknown>,
+  category: string,
+): ContentItem {
+  const dateValue = getText(
+    item.updated_at ?? item.updatedAt ?? item.created_at ?? item.date,
+  )
+  const date = formatItemDate(dateValue)
+  const rawImage = getText(item.image_url ?? item.image)
+  const image = rawImage.startsWith("http")
+    ? rawImage.replace(/^http:\/\//, "https://")
+    : rawImage.startsWith("/")
+      ? `${API_URL}${rawImage}`
+      : rawImage
+  const status = getText(item.status)
+
+  return {
+    id: `${category}-${getText(item.id) || `${getText(item.title ?? item.name)}-${date.timestamp}`}`,
+    title: getText(item.title ?? item.name) || "Tanpa judul",
+    description: getText(item.description) || "—",
+    category,
+    province: getText(item.province) || "—",
+    status:
+      status.toLowerCase() === "published"
+        ? "Terbit"
+        : status.toLowerCase() === "draft"
+          ? "Draf"
+          : status || "—",
+    date: date.label,
+    sortDate: date.timestamp,
+    image,
+  }
+}
 
 export default function AdminDashboard() {
-  const [items, setItems] = useState(initialItems)
+  const navigate = useNavigate()
+  const [items, setItems] = useState<ContentItem[]>([])
+  const [recentLoading, setRecentLoading] = useState(true)
+  const [recentErrors, setRecentErrors] = useState<string[]>([])
   const [search, setSearch] = useState("")
   const [activeCategory, setActiveCategory] = useState("Semua")
   const [period, setPeriod] = useState("Semua waktu")
@@ -83,17 +201,115 @@ export default function AdminDashboard() {
   const [formTitle, setFormTitle] = useState("")
   const [formCategory, setFormCategory] = useState("Lagu Daerah")
   const [notice, setNotice] = useState("")
-  const [notificationsOpen, setNotificationsOpen] = useState(false)
-  const [profileOpen, setProfileOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [page, setPage] = useState(1)
+  const [categoryCounts, setCategoryCounts] = useState<
+    Record<string, CategoryCount>
+  >(() =>
+    Object.fromEntries(
+      categories
+        .filter((category) => category.endpoint)
+        .map(({ label }) => [
+          label,
+          { count: null, error: null, loading: true },
+        ]),
+    ),
+  )
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function fetchCategoryData() {
+      await Promise.all(
+        categories
+          .filter(
+            (category): category is typeof category & { endpoint: string } =>
+              Boolean(category.endpoint),
+          )
+          .map(async ({ endpoint, label }) => {
+            try {
+              const response = await fetch(
+                API_URL ? `${API_URL}${endpoint}` : endpoint,
+                {
+                  signal: controller.signal,
+                  headers: {
+                    Accept: "application/json",
+                    "ngrok-skip-browser-warning": "true",
+                  },
+                },
+              )
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+              }
+
+              const payload: unknown = await response.json()
+              const count = getResponseCount(payload)
+              const apiItems = getResponseItems(payload).map((item) =>
+                mapApiItem(item, label),
+              )
+              setItems((current) => [
+                ...current.filter((item) => item.category !== label),
+                ...apiItems,
+              ])
+              setCategoryCounts((current) => ({
+                ...current,
+                [label]: { count, error: null, loading: false },
+              }))
+            } catch (error) {
+              if (error instanceof Error && error.name === "AbortError") return
+              setCategoryCounts((current) => ({
+                ...current,
+                [label]: {
+                  count: null,
+                  error:
+                    error instanceof Error
+                      ? error.message
+                      : "Gagal memuat jumlah dari API.",
+                  loading: false,
+                },
+              }))
+              setRecentErrors((current) => [
+                ...current,
+                `${label}: ${error instanceof Error ? error.message : "Gagal memuat data."}`,
+              ])
+            }
+          }),
+      )
+      if (!controller.signal.aborted) setRecentLoading(false)
+    }
+
+    void fetchCategoryData()
+    return () => controller.abort()
+  }, [])
 
   const visibleItems = useMemo(() => items.filter((item) => {
     const matchesCategory = activeCategory === "Semua" || item.category === activeCategory
     const term = search.trim().toLocaleLowerCase("id")
     const matchesSearch = !term || `${item.title} ${item.description} ${item.category} ${item.province}`.toLocaleLowerCase("id").includes(term)
     return matchesCategory && matchesSearch
-  }), [activeCategory, items, search])
+  }).sort((a, b) => b.sortDate - a.sortDate), [activeCategory, items, search])
+  const islandCounts = useMemo(() => {
+    const counts = new Map(islands.map((island) => [island, 0]))
+    items.forEach((item) => {
+      const island = getIslandByProvince(item.province)
+      if (island) counts.set(island, (counts.get(island) ?? 0) + 1)
+    })
+    return islands.map((label) => ({
+      label,
+      value: counts.get(label) ?? 0,
+    }))
+  }, [items])
+  const totalIslandContent = islandCounts.reduce(
+    (total, island) => total + island.value,
+    0,
+  )
+  const largestIsland = islandCounts.reduce<(typeof islandCounts)[number] | null>(
+    (largest, island) =>
+      island.value > (largest?.value ?? 0) ? island : largest,
+    null,
+  )
+  const maxIslandCount = Math.max(...islandCounts.map((island) => island.value))
+  const chartScale = Math.max(4, Math.ceil(maxIslandCount / 4) * 4)
 
   function openForm(kind: "add" | "edit", item?: ContentItem, category?: string) {
     setModal(kind)
@@ -109,7 +325,7 @@ export default function AdminDashboard() {
       setItems((current) => current.map((item) => item.id === editing.id ? { ...item, title: formTitle.trim(), category: formCategory } : item))
       setNotice(`“${formTitle.trim()}” berhasil diperbarui.`)
     } else {
-      const newItem: ContentItem = { id: Date.now(), title: formTitle.trim(), description: "Konten baru menunggu dilengkapi", category: formCategory, province: "Belum ditentukan", status: "Draf", date: "18 Okt 2026", image: "/assets/0552e.png" }
+      const newItem: ContentItem = { id: String(Date.now()), title: formTitle.trim(), description: "Konten baru menunggu dilengkapi", category: formCategory, province: "Belum ditentukan", status: "Draf", date: new Date().toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" }), sortDate: Date.now(), image: "/assets/0552e.png" }
       setItems((current) => [newItem, ...current])
       setActiveCategory("Semua")
       setPage(1)
@@ -132,6 +348,8 @@ export default function AdminDashboard() {
     if (label === "Dashboard") {
       setActiveCategory("Semua")
       setNotice("")
+    } else if (label === "Lagu Daerah") {
+      navigate("/admin/musik")
     } else if (categories.some((category) => category.label === label)) {
       setActiveCategory(label)
       setNotice("")
@@ -143,45 +361,23 @@ export default function AdminDashboard() {
 
   return (
     <div className={styles.shell}>
-      <button className={`${styles.scrim} ${mobileNavOpen ? styles.scrimVisible : ""}`} aria-label="Tutup navigasi" onClick={() => setMobileNavOpen(false)} />
-      <aside className={`${styles.sidebar} ${mobileNavOpen ? styles.sidebarOpen : ""}`}>
-        <a href="/" className={styles.brand} aria-label="Budaya Indonesia, beranda">
-          <span className={styles.brandMark}><Shield size={23} strokeWidth={1.55} /></span>
-          <span>Budaya Indonesia</span>
-        </a>
-        <div className={styles.sidebarLabel}>Panel admin</div>
-        <button className={styles.collapseButton} aria-label="Tutup menu" onClick={() => setMobileNavOpen(false)}><ChevronLeft size={17} /></button>
-        <nav className={styles.navigation} aria-label="Navigasi admin">
-          <button className={`${styles.navItem} ${activeCategory === "Semua" ? styles.navActive : ""}`} onClick={() => chooseMenu("Dashboard")}><BookOpen size={17} />Dashboard</button>
-          {sidebarGroups.map((group) => <div className={styles.navGroup} key={group.heading}>
-            <p className={styles.groupLabel}>{group.heading}</p>
-            {group.items.map(({ label, icon: Icon }) => <button key={label} className={`${styles.navItem} ${activeCategory === label ? styles.navActive : ""}`} onClick={() => chooseMenu(label)}><Icon size={17} />{label}</button>)}
-          </div>)}
-        </nav>
-        <div className={styles.sidebarBottom}>
-          <p className={styles.sidebarMotto}>Mengenal warisan,<br />menghargai keberagaman.</p>
-          <div className={styles.sidebarUser}><span className={styles.avatar}>RP</span><span><b>Rani Pratiwi</b><small>Administrator</small></span></div>
-          <a href="/login" className={styles.logout}><LogOut size={16} />Logout</a>
-        </div>
-      </aside>
+      <AdminSidebar
+        activeItem={activeCategory === "Semua" ? "Dashboard" : activeCategory}
+        open={mobileNavOpen}
+        onClose={() => setMobileNavOpen(false)}
+        onSelect={chooseMenu}
+      />
 
       <main className={styles.main}>
-        <header className={styles.topbar}>
-          <button className={styles.mobileMenu} aria-label="Buka navigasi" onClick={() => setMobileNavOpen(true)}><Menu size={21} /></button>
-          <div className={styles.breadcrumb}><span>Dashboard</span><i /> <small>Ruang redaksi</small></div>
-          <label className={styles.searchBox}><Search size={17} /><input value={search} onChange={(event) => { setSearch(event.target.value); setPage(1) }} placeholder="Cari konten..." aria-label="Cari konten" /><kbd>⌘ K</kbd></label>
-          <div className={styles.topActions}>
-            <div className={styles.popoverWrap}>
-              <button className={styles.iconButton} aria-label="Notifikasi" aria-expanded={notificationsOpen} onClick={() => { setNotificationsOpen(!notificationsOpen); setProfileOpen(false) }}><Bell size={19} /><span className={styles.notificationDot} /></button>
-              {notificationsOpen && <div className={styles.popover}><b>Notifikasi</b><p><span className={styles.statusDot} />Ada 2 konten draf yang menunggu ditinjau.</p><button onClick={() => setNotificationsOpen(false)}>Tutup</button></div>}
-            </div>
-            <span className={styles.topDivider} />
-            <div className={styles.popoverWrap}>
-              <button className={styles.profileButton} aria-expanded={profileOpen} onClick={() => { setProfileOpen(!profileOpen); setNotificationsOpen(false) }}><span className={styles.avatar}>RP</span><span>Rani Pratiwi</span><ChevronDown size={15} /></button>
-              {profileOpen && <div className={`${styles.popover} ${styles.profilePopover}`}><b>Rani Pratiwi</b><small>Administrator</small><a href="/login"><LogOut size={15} />Keluar</a></div>}
-            </div>
-          </div>
-        </header>
+        <AdminTopbar
+          title="Dashboard"
+          search={search}
+          onSearchChange={(value) => {
+            setSearch(value)
+            setPage(1)
+          }}
+          onOpenMenu={() => setMobileNavOpen(true)}
+        />
 
         <div className={styles.content}>
           {notice && <div role="status" className={styles.notice}><Check size={16} />{notice}<button aria-label="Tutup pemberitahuan" onClick={() => setNotice("")}><X size={15} /></button></div>}
@@ -191,20 +387,56 @@ export default function AdminDashboard() {
           </section>
 
           <section className={styles.collection} aria-labelledby="collection-title">
-            <div className={styles.sectionHeading}><h2 id="collection-title">Koleksi budaya</h2><span>620 konten · 7 kategori · +39 bulan ini</span></div>
-            <div className={styles.statsGrid}>{categories.map(({ label, count, change, icon: Icon }) => <button className={styles.statCard} key={label} onClick={() => chooseMenu(label)} aria-label={`Lihat ${label}, ${count} konten`}>
-              <Icon className={styles.statIcon} size={19} strokeWidth={1.9} /><span className={styles.statLabel}>{label}</span><strong>{count}</strong><small>+{change} bulan ini</small>
-            </button>)}</div>
+            <div className={styles.sectionHeading}><h2 id="collection-title">Koleksi budaya</h2><span>Jumlah dihitung dari API yang tersedia</span></div>
+            <div className={styles.statsGrid}>
+              {categories.map(({ label, endpoint, icon: Icon }) => {
+                const result = categoryCounts[label]
+                const displayedCount = !endpoint
+                  ? "—"
+                  : result?.loading
+                    ? "…"
+                    : result?.error
+                      ? "—"
+                      : result?.count ?? "—"
+
+                return (
+                  <button
+                    className={styles.statCard}
+                    key={label}
+                    onClick={() => chooseMenu(label)}
+                    aria-label={`Lihat ${label}, ${displayedCount} konten`}
+                  >
+                    <Icon
+                      className={styles.statIcon}
+                      size={19}
+                      strokeWidth={1.9}
+                    />
+                    <span className={styles.statLabel}>{label}</span>
+                    <strong>{displayedCount}</strong>
+                    {(result?.error || !endpoint) && (
+                      <small>
+                        {!endpoint
+                          ? "API belum tersedia"
+                          : `Gagal memuat: ${result.error}`}
+                      </small>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
           </section>
 
           <div className={styles.insightGrid}>
-            <section className={styles.chartPanel} aria-labelledby="region-title">
-              <div className={styles.panelHeader}><div><h2 id="region-title">Konten per Wilayah</h2><p>Sebaran 620 konten di enam wilayah Nusantara.</p></div><label className={styles.selectWrap}><span className={styles.srOnly}>Periode grafik</span><select value={period} onChange={(event) => setPeriod(event.target.value)}><option>Semua waktu</option><option>Tahun ini</option><option>Bulan ini</option></select><ChevronDown size={14} /></label></div>
-              <div className={styles.chart} role="img" aria-label="Grafik batang jumlah konten per wilayah">
-                <div className={styles.yAxis}><span>200</span><span>150</span><span>100</span><span>50</span><span>0</span></div>
-            <div className={styles.plot}>{regions.map((region) => <div className={styles.barColumn} key={region.label}><strong className={region.label === "Jawa" ? styles.barValueAccent : ""}>{region.value}</strong><div className={`${styles.bar} ${region.label === "Jawa" ? styles.barAccent : ""}`} style={{ height: `${region.value * .75}px` }} /><span>{region.label}</span></div>)}</div>
+            <section className={styles.chartPanel} aria-labelledby="island-title">
+              <div className={styles.panelHeader}><div><h2 id="island-title">Konten per Pulau</h2><p>Sebaran {totalIslandContent} konten API berdasarkan provinsi.</p></div><label className={styles.selectWrap}><span className={styles.srOnly}>Periode grafik</span><select value={period} onChange={(event) => setPeriod(event.target.value)}><option>Semua waktu</option><option>Tahun ini</option><option>Bulan ini</option></select><ChevronDown size={14} /></label></div>
+              <div className={styles.chart} role="img" aria-label="Grafik batang jumlah konten per pulau">
+                <div className={styles.yAxis}>{[1, 0.75, 0.5, 0.25, 0].map((ratio) => <span key={ratio}>{Math.round(chartScale * ratio)}</span>)}</div>
+                <div className={styles.plot}>{islandCounts.map((island) => {
+                  const isLargest = island.value > 0 && island.value === largestIsland?.value
+                  return <div className={styles.barColumn} key={island.label}><strong className={isLargest ? styles.barValueAccent : ""}>{island.value}</strong><div className={`${styles.bar} ${isLargest ? styles.barAccent : ""}`} style={{ height: `${island.value / chartScale * 150}px` }} /><span>{island.label}</span></div>
+                })}</div>
               </div>
-              <p className={styles.chartNote}><span />Jawa memiliki koleksi terbanyak: 182 konten (29,4%).</p>
+              <p className={styles.chartNote}><span />{largestIsland?.value ? `${largestIsland.label} memiliki koleksi terbanyak: ${largestIsland.value} konten (${(largestIsland.value / totalIslandContent * 100).toLocaleString("id-ID", { maximumFractionDigits: 1 })}%).` : "Belum ada konten dengan provinsi yang dapat dipetakan ke pulau."}</p>
             </section>
             <section className={styles.quickPanel} aria-labelledby="quick-title">
               <h2 id="quick-title">Aksi cepat</h2><p>Mulai cerita baru dari kategori pilihan.</p>
@@ -214,15 +446,22 @@ export default function AdminDashboard() {
           </div>
 
           <section className={styles.tablePanel} id="konten-terbaru" aria-labelledby="latest-title">
-            <div className={styles.tableHeader}><div><h2 id="latest-title">Konten Terbaru</h2><p>{activeCategory === "Semua" ? "Cerita yang baru ditambahkan dan diperbarui oleh tim redaksi." : `Menampilkan koleksi ${activeCategory}.`}</p></div><button className={styles.allLink} onClick={() => { setActiveCategory("Semua"); setSearch(""); setPage(1) }}><ArrowDownRight size={16} />Lihat semua konten</button></div>
+            <div className={styles.tableHeader}><div><h2 id="latest-title">Konten Terbaru</h2><p>{activeCategory === "Semua" ? "Pembaruan terbaru dari database budaya." : `Menampilkan koleksi ${activeCategory} dari database.`}</p></div><button className={styles.allLink} onClick={() => { setActiveCategory("Semua"); setSearch(""); setPage(1) }}><ArrowDownRight size={16} />Lihat semua konten</button></div>
+            {recentErrors.length > 0 && (
+              <p className={styles.notice} role="alert">
+                Sebagian data API gagal dimuat: {recentErrors.join(" · ")}
+              </p>
+            )}
             <div className={styles.tableScroll}><table><thead><tr><th>Judul konten</th><th>Kategori</th><th>Provinsi</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead><tbody>
-              {visibleItems.length ? visibleItems.slice((page - 1) * 7, page * 7).map((item) => <tr key={item.id}>
-                <td><div className={styles.titleCell}><img src={item.image} alt="" /><span><b>{item.title}</b><small>{item.description}</small></span></div></td><td>{item.category}</td><td className={styles.mutedCell}>{item.province}</td><td><span className={`${styles.status} ${item.status === "Terbit" ? styles.published : styles.draft}`}><i />{item.status}</span></td><td className={styles.mutedCell}>{item.date}</td><td><div className={styles.rowActions}><button onClick={() => openForm("edit", item)}>Edit</button><button onClick={() => removeItem(item)}>Hapus</button></div></td>
-              </tr>) : <tr><td colSpan={6}><div className={styles.emptyState}><Search size={20} /><b>Konten tidak ditemukan</b><span>Coba kata kunci atau kategori yang lain.</span><button onClick={() => { setSearch(""); setActiveCategory("Semua") }}>Reset pencarian</button></div></td></tr>}
+              {recentLoading && visibleItems.length === 0 ? (
+                <tr><td colSpan={6}>Memuat konten dari database...</td></tr>
+              ) : visibleItems.length ? visibleItems.slice((page - 1) * 7, page * 7).map((item) => <tr key={item.id}>
+                <td><div className={styles.titleCell}>{item.image && <img src={item.image} alt="" />}<span><b>{item.title}</b><small>{item.description}</small></span></div></td><td>{item.category}</td><td className={styles.mutedCell}>{item.province}</td><td><span className={`${styles.status} ${item.status === "Terbit" ? styles.published : styles.draft}`}><i />{item.status}</span></td><td className={styles.mutedCell}>{item.date}</td><td><div className={styles.rowActions}><button onClick={() => openForm("edit", item)}>Edit</button><button onClick={() => removeItem(item)}>Hapus</button></div></td>
+              </tr>) : <tr><td colSpan={6}><div className={styles.emptyState}><Search size={20} /><b>{recentErrors.length ? "Data database gagal dimuat" : "Konten tidak ditemukan"}</b><span>{recentErrors.length ? "Periksa koneksi API lalu coba lagi." : "Coba kata kunci atau kategori yang lain."}</span>{!recentErrors.length && <button onClick={() => { setSearch(""); setActiveCategory("Semua"); setPage(1) }}>Reset pencarian</button>}</div></td></tr>}
             </tbody></table></div>
-            <div className={styles.tableFooter}><span>Menampilkan {visibleItems.length ? Math.min(visibleItems.length - (page - 1) * 7, 7) : 0} konten terbaru dari 620 konten <em>· Data ilustratif</em></span><div className={styles.pagination}><button aria-label="Halaman sebelumnya" onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}><ChevronLeft size={15} /></button><span>{page}</span><button aria-label="Halaman berikutnya" onClick={() => setPage(page + 1)} disabled={visibleItems.length <= page * 7}><ChevronRight size={15} /></button></div><small><span className={styles.syncDot} />Diperbarui hari ini, 09.41 WIB</small></div>
+            <div className={styles.tableFooter}><span>Menampilkan {visibleItems.length ? Math.min(visibleItems.length - (page - 1) * 7, 7) : 0} dari {visibleItems.length} konten API</span><div className={styles.pagination}><button aria-label="Halaman sebelumnya" onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}><ChevronLeft size={15} /></button><span>{page}</span><button aria-label="Halaman berikutnya" onClick={() => setPage(page + 1)} disabled={visibleItems.length <= page * 7}><ChevronRight size={15} /></button></div><small><span className={styles.syncDot} />Data dari API</small></div>
           </section>
-          <footer className={styles.footer}><span>© 2026 Budaya Indonesia · Merawat cerita bersama.</span><span>Data ilustratif · 10 Oktober 2026</span></footer>
+          <footer className={styles.footer}><span>© 2026 Budaya Indonesia · Merawat cerita bersama.</span><span>Konten terbaru dari API</span></footer>
         </div>
       </main>
 

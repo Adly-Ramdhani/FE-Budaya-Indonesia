@@ -12,7 +12,7 @@ import LaguPage from "./pages/LaguPage"
 
 import LoginPage from "./pages/LoginPage"
 
-import AdminDashboard from "./pages/AdminDashboard"
+import AdminDashboard from "./pages/Admin/Dashboard/AdminDashboard"
 
 import LaguDaerahPage from "./pages/Admin/LaguDaerah/LaguDaerah"
 import CreateLaguDaerahPage from "./pages/Admin/LaguDaerah/CreateLaguDaerahPage"
@@ -38,9 +38,9 @@ import EditMakananPage from "./pages/Admin/Makanan/EditMakananPage"
 import DaerahProvinsiPage from "./pages/Admin/DaerahProvinsi/DaerahProvinsi"
 import CreateDaerahProvinsiPage from "./pages/Admin/DaerahProvinsi/CreateDaerahProvinsiPage"
 import EditDaerahProvinsiPage from "./pages/Admin/DaerahProvinsi/EditDaerahProvinsiPage"
-import AdminContentDetailPage from "./pages/Admin/AdminContentDetailPage"
+import AdminContentDetailPage from "./pages/Admin/Shared/AdminContentDetailPage"
 
-import { AdminStaticStub } from "./pages/AdminStubPage"
+import { AdminStaticStub } from "./pages/Admin/Shared/AdminStubPage"
 
 export default function App() {
   return (

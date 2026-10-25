@@ -1,12 +1,12 @@
 import { useEffect } from "react"
 import { ArrowUpRight, MapPin, Music2, X } from "lucide-react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
-import AdminShell from "../../admin/AdminShell"
-import { categoryConfigs, isCategoryKey } from "../../admin/categoryConfig"
-import { getContentBySlug } from "../../admin/contentRepository"
-import { categoryDetailFields } from "../../admin/formConfig"
-import type { CategoryKey, ContentItem } from "../../admin/types"
-import { getSongLanguage, getSongLyrics } from "../LaguPage"
+import AdminShell from "../../../admin/AdminShell"
+import { categoryConfigs, isCategoryKey } from "../../../admin/categoryConfig"
+import { getContentBySlug } from "../../../admin/contentRepository"
+import { categoryDetailFields } from "../../../admin/formConfig"
+import type { CategoryKey, ContentItem } from "../../../admin/types"
+import { getSongLanguage, getSongLyrics } from "../../LaguPage"
 import styles from "./AdminContentDetailPage.module.css"
 
 type ReturnState = { from?: string } | null

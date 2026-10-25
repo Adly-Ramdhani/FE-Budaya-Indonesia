@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom"
-import AdminShell from "../admin/AdminShell"
-import { categoryConfigs, isCategoryKey } from "../admin/categoryConfig"
+import AdminShell from "../../../admin/AdminShell"
+import { categoryConfigs, isCategoryKey } from "../../../admin/categoryConfig"
 import styles from "./AdminStubPage.module.css"
 
 const titles: Record<string, string> = {

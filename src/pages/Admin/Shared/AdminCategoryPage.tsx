@@ -15,15 +15,15 @@ import {
   Trash2,
   X,
 } from "lucide-react"
-import AdminShell from "../admin/AdminShell"
+import AdminShell from "../../../admin/AdminShell"
 import {
   categoryConfigs,
   isCategoryKey,
   provinces,
   regions,
-} from "../admin/categoryConfig"
-import { deleteContent, getContents } from "../admin/contentRepository"
-import type { CategoryKey, ContentItem, ContentStatus } from "../admin/types"
+} from "../../../admin/categoryConfig"
+import { deleteContent, getContents } from "../../../admin/contentRepository"
+import type { CategoryKey, ContentItem, ContentStatus } from "../../../admin/types"
 import styles from "./AdminCategoryPage.module.css"
 
 const PAGE_SIZE = 6

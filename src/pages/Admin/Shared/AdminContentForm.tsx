@@ -30,21 +30,21 @@ import {
   Upload,
   X,
 } from "lucide-react"
-import AdminShell from "../admin/AdminShell"
-import { categoryConfigs, provinces, regions } from "../admin/categoryConfig"
+import AdminShell from "../../../admin/AdminShell"
+import { categoryConfigs, provinces, regions } from "../../../admin/categoryConfig"
 import {
   createContent,
   getContentBySlug,
   getContents,
   slugify,
   updateContent,
-} from "../admin/contentRepository"
+} from "../../../admin/contentRepository"
 import {
   categoryDetailFields,
   categoryIntro,
   provinceAbbreviations,
   type DetailFieldConfig,
-} from "../admin/formConfig"
+} from "../../../admin/formConfig"
 import type {
   CategoryDetailValues,
   CategoryKey,
@@ -52,7 +52,7 @@ import type {
   ContentFormDraft,
   ContentItem,
   SavedMedia,
-} from "../admin/types"
+} from "../../../admin/types"
 import { ContentCard } from "./AdminCategoryPage"
 import styles from "./AdminContentForm.module.css"
 

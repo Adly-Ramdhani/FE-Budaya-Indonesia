@@ -350,6 +350,8 @@ export default function AdminDashboard() {
       setNotice("")
     } else if (label === "Lagu Daerah") {
       navigate("/admin/musik")
+    } else if (label === "Alat Musik") {
+      navigate("/admin/alat-musik")
     } else if (categories.some((category) => category.label === label)) {
       setActiveCategory(label)
       setNotice("")

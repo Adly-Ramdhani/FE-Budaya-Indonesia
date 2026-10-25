@@ -23,7 +23,7 @@ import {
   regions,
 } from "../admin/categoryConfig"
 import { deleteContent, getContents } from "../admin/contentRepository"
-import type { ContentItem, ContentStatus } from "../admin/types"
+import type { CategoryKey, ContentItem, ContentStatus } from "../admin/types"
 import styles from "./AdminCategoryPage.module.css"
 
 const PAGE_SIZE = 6
@@ -43,8 +43,11 @@ const dateLabel = (value: string) =>
     year: "numeric",
   }).format(new Date(`${value}T12:00:00`))
 
-export default function AdminCategoryPage() {
-  const { category } = useParams()
+export default function AdminCategoryPage({ category: fixedCategory }: {
+  category?: CategoryKey
+} = {}) {
+  const { category: routeCategory } = useParams()
+  const category = fixedCategory ?? routeCategory
   if (!isCategoryKey(category))
     return (
       <AdminShell title="Koleksi Budaya">

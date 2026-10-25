@@ -53,7 +53,6 @@ import type {
   ContentItem,
   SavedMedia,
 } from "../admin/types"
-import { isCategoryKey } from "../admin/categoryConfig"
 import { ContentCard } from "./AdminCategoryPage"
 import styles from "./AdminContentForm.module.css"
 
@@ -286,21 +285,17 @@ function toSavedFormData(draft: ContentFormDraft): ContentFormData {
 }
 
 export default function AdminContentForm({
+  category,
   mode,
 }: {
+  category: CategoryKey
   mode: "create" | "edit"
 }) {
-  const { category: routeCategory, slug } = useParams()
-  if (!isCategoryKey(routeCategory))
-    return (
-      <AdminShell title="Konten">
-        <NotFoundState title="Kategori tidak ditemukan" />
-      </AdminShell>
-    )
+  const { slug } = useParams()
   return (
     <FormPage
-      key={`${routeCategory}-${mode}-${slug ?? "new"}`}
-      category={routeCategory}
+      key={`${category}-${mode}-${slug ?? "new"}`}
+      category={category}
       slug={slug}
       mode={mode}
     />

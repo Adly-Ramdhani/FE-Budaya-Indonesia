@@ -14,8 +14,24 @@ import LoginPage from "./pages/LoginPage"
 
 import AdminDashboard from "./pages/AdminDashboard"
 
-import AdminCategoryPage from "./pages/AdminCategoryPage"
-import AdminContentForm from "./pages/AdminContentForm"
+import LaguDaerahPage, {
+  LaguDaerahFormPage,
+} from "./pages/admin/LaguDaerahPage"
+import TarianPage, { TarianFormPage } from "./pages/admin/TarianPage"
+import AlatMusikPage, { AlatMusikFormPage } from "./pages/admin/AlatMusikPage"
+import SenjataTradisionalPage, {
+  SenjataTradisionalFormPage,
+} from "./pages/admin/SenjataTradisionalPage"
+import PakaianAdatPage, {
+  PakaianAdatFormPage,
+} from "./pages/admin/PakaianAdatPage"
+import RumahAdatAdminPage, {
+  RumahAdatFormPage,
+} from "./pages/admin/RumahAdatPage"
+import MakananAdminPage, { MakananFormPage } from "./pages/admin/MakananPage"
+import DaerahProvinsiPage, {
+  DaerahProvinsiFormPage,
+} from "./pages/admin/DaerahProvinsiPage"
 
 import { AdminStaticStub } from "./pages/AdminStubPage"
 
@@ -47,14 +63,80 @@ export default function App() {
         element={<AdminStaticStub path="/admin/pengaturan" />}
       />
       <Route
-        path="/admin/:category/baru"
-        element={<AdminContentForm mode="create" />}
+        path="/admin/lagu-daerah/baru"
+        element={<LaguDaerahFormPage mode="create" />}
       />
       <Route
-        path="/admin/:category/:slug/edit"
-        element={<AdminContentForm mode="edit" />}
+        path="/admin/lagu-daerah/:slug/edit"
+        element={<LaguDaerahFormPage mode="edit" />}
       />
-      <Route path="/admin/:category" element={<AdminCategoryPage />} />
+      <Route path="/admin/lagu-daerah" element={<LaguDaerahPage />} />
+      <Route
+        path="/admin/tarian/baru"
+        element={<TarianFormPage mode="create" />}
+      />
+      <Route
+        path="/admin/tarian/:slug/edit"
+        element={<TarianFormPage mode="edit" />}
+      />
+      <Route path="/admin/tarian" element={<TarianPage />} />
+      <Route
+        path="/admin/alat-musik/baru"
+        element={<AlatMusikFormPage mode="create" />}
+      />
+      <Route
+        path="/admin/alat-musik/:slug/edit"
+        element={<AlatMusikFormPage mode="edit" />}
+      />
+      <Route path="/admin/alat-musik" element={<AlatMusikPage />} />
+      <Route
+        path="/admin/senjata-tradisional/baru"
+        element={<SenjataTradisionalFormPage mode="create" />}
+      />
+      <Route
+        path="/admin/senjata-tradisional/:slug/edit"
+        element={<SenjataTradisionalFormPage mode="edit" />}
+      />
+      <Route
+        path="/admin/senjata-tradisional"
+        element={<SenjataTradisionalPage />}
+      />
+      <Route
+        path="/admin/pakaian-adat/baru"
+        element={<PakaianAdatFormPage mode="create" />}
+      />
+      <Route
+        path="/admin/pakaian-adat/:slug/edit"
+        element={<PakaianAdatFormPage mode="edit" />}
+      />
+      <Route path="/admin/pakaian-adat" element={<PakaianAdatPage />} />
+      <Route
+        path="/admin/rumah-adat/baru"
+        element={<RumahAdatFormPage mode="create" />}
+      />
+      <Route
+        path="/admin/rumah-adat/:slug/edit"
+        element={<RumahAdatFormPage mode="edit" />}
+      />
+      <Route path="/admin/rumah-adat" element={<RumahAdatAdminPage />} />
+      <Route
+        path="/admin/makanan/baru"
+        element={<MakananFormPage mode="create" />}
+      />
+      <Route
+        path="/admin/makanan/:slug/edit"
+        element={<MakananFormPage mode="edit" />}
+      />
+      <Route path="/admin/makanan" element={<MakananAdminPage />} />
+      <Route
+        path="/admin/daerah-provinsi/baru"
+        element={<DaerahProvinsiFormPage mode="create" />}
+      />
+      <Route
+        path="/admin/daerah-provinsi/:slug/edit"
+        element={<DaerahProvinsiFormPage mode="edit" />}
+      />
+      <Route path="/admin/daerah-provinsi" element={<DaerahProvinsiPage />} />
     </Routes>
   )
 }

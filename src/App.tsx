@@ -32,6 +32,7 @@ import MakananAdminPage, { MakananFormPage } from "./pages/admin/MakananPage"
 import DaerahProvinsiPage, {
   DaerahProvinsiFormPage,
 } from "./pages/admin/DaerahProvinsiPage"
+import AdminContentDetailPage from "./pages/admin/AdminContentDetailPage"
 
 import { AdminStaticStub } from "./pages/AdminStubPage"
 
@@ -61,6 +62,10 @@ export default function App() {
       <Route
         path="/admin/pengaturan"
         element={<AdminStaticStub path="/admin/pengaturan" />}
+      />
+      <Route
+        path="/admin/:category/:slug/preview"
+        element={<AdminContentDetailPage />}
       />
       <Route
         path="/admin/lagu-daerah/baru"

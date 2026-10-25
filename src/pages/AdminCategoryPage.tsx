@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useParams, useSearchParams, Link } from "react-router-dom"
+import { useParams, useSearchParams, Link, useLocation } from "react-router-dom"
 import {
   ArrowDownWideNarrow,
   ArrowUpRight,
@@ -520,6 +520,7 @@ export function ContentCard({
   onDelete: (item: ContentItem) => void
   previewMode?: boolean
 }) {
+  const location = useLocation()
   const config = categoryConfigs[(category as keyof typeof categoryConfigs)]
   const [imageFailed, setImageFailed] = useState(false)
   return (
@@ -590,7 +591,8 @@ export function ContentCard({
             </button>
             <Link
               aria-label={`Lihat ${item.title}`}
-              to={config.previewPath}
+              to={`/admin/${category}/${item.slug}/preview`}
+              state={{ from: `${location.pathname}${location.search}` }}
               className={styles.preview}
             >
               <ArrowUpRight size={16} />

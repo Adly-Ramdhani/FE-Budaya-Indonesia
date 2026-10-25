@@ -175,7 +175,7 @@ function cleanLyrics(lyrics?: string): string {
     .trim()
 }
 
-function getSongLyrics(title: string, lyrics?: string): string {
+export function getSongLyrics(title: string, lyrics?: string): string {
   const cleaned = cleanLyrics(lyrics)
   if (cleaned) return cleaned
   const key = title.toLowerCase().trim()
@@ -292,6 +292,12 @@ const fallbackSongs: Song[] = [
     lyrics: defaultLyricsByTitle["ayo mama"],
   },
 ]
+
+export function getSongLanguage(title: string): string {
+    return (
+        fallbackSongs.find((song) => song.title.toLocaleLowerCase("id-ID") === title.toLocaleLowerCase("id-ID"))?.language ?? ""
+    )
+}
 
 function resolveAudioUrl(audio?: string): string | undefined {
     if (!audio) return undefined

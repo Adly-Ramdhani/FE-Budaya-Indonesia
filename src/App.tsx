@@ -14,25 +14,31 @@ import LoginPage from "./pages/LoginPage"
 
 import AdminDashboard from "./pages/AdminDashboard"
 
-import LaguDaerahPage, {
-  LaguDaerahFormPage,
-} from "./pages/admin/LaguDaerahPage"
-import TarianPage, { TarianFormPage } from "./pages/admin/TarianPage"
-import AlatMusikPage, { AlatMusikFormPage } from "./pages/admin/AlatMusikPage"
-import SenjataTradisionalPage, {
-  SenjataTradisionalFormPage,
-} from "./pages/admin/SenjataTradisionalPage"
-import PakaianAdatPage, {
-  PakaianAdatFormPage,
-} from "./pages/admin/PakaianAdatPage"
-import RumahAdatAdminPage, {
-  RumahAdatFormPage,
-} from "./pages/admin/RumahAdatPage"
-import MakananAdminPage, { MakananFormPage } from "./pages/admin/MakananPage"
-import DaerahProvinsiPage, {
-  DaerahProvinsiFormPage,
-} from "./pages/admin/DaerahProvinsiPage"
-import AdminContentDetailPage from "./pages/admin/AdminContentDetailPage"
+import LaguDaerahPage from "./pages/Admin/LaguDaerah/LaguDaerah"
+import CreateLaguDaerahPage from "./pages/Admin/LaguDaerah/CreateLaguDaerahPage"
+import EditLaguDaerahPage from "./pages/Admin/LaguDaerah/EditLaguDaerahPage"
+import TarianPage from "./pages/Admin/Tarian/Tarian"
+import CreateTarianPage from "./pages/Admin/Tarian/CreateTarianPage"
+import EditTarianPage from "./pages/Admin/Tarian/EditTarianPage"
+import AlatMusikPage from "./pages/Admin/AlatMusik/AlatMusik"
+import CreateAlatMusikPage from "./pages/Admin/AlatMusik/CreateAlatMusikPage"
+import EditAlatMusikPage from "./pages/Admin/AlatMusik/EditAlatMusikPage"
+import SenjataTradisionalPage from "./pages/Admin/SenjataTradisional/SenjataTradisional"
+import CreateSenjataTradisionalPage from "./pages/Admin/SenjataTradisional/CreateSenjataTradisionalPage"
+import EditSenjataTradisionalPage from "./pages/Admin/SenjataTradisional/EditSenjataTradisionalPage"
+import PakaianAdatPage from "./pages/Admin/PakaianAdat/PakaianAdat"
+import CreatePakaianAdatPage from "./pages/Admin/PakaianAdat/CreatePakaianAdatPage"
+import EditPakaianAdatPage from "./pages/Admin/PakaianAdat/EditPakaianAdatPage"
+import RumahAdatAdminPage from "./pages/Admin/RumahAdat/RumahAdat"
+import CreateRumahAdatPage from "./pages/Admin/RumahAdat/CreateRumahAdatPage"
+import EditRumahAdatPage from "./pages/Admin/RumahAdat/EditRumahAdatPage"
+import MakananAdminPage from "./pages/Admin/Makanan/Makanan"
+import CreateMakananPage from "./pages/Admin/Makanan/CreateMakananPage"
+import EditMakananPage from "./pages/Admin/Makanan/EditMakananPage"
+import DaerahProvinsiPage from "./pages/Admin/DaerahProvinsi/DaerahProvinsi"
+import CreateDaerahProvinsiPage from "./pages/Admin/DaerahProvinsi/CreateDaerahProvinsiPage"
+import EditDaerahProvinsiPage from "./pages/Admin/DaerahProvinsi/EditDaerahProvinsiPage"
+import AdminContentDetailPage from "./pages/Admin/AdminContentDetailPage"
 
 import { AdminStaticStub } from "./pages/AdminStubPage"
 
@@ -69,38 +75,29 @@ export default function App() {
       />
       <Route
         path="/admin/lagu-daerah/baru"
-        element={<LaguDaerahFormPage mode="create" />}
+        element={<CreateLaguDaerahPage />}
       />
       <Route
         path="/admin/lagu-daerah/:slug/edit"
-        element={<LaguDaerahFormPage mode="edit" />}
+        element={<EditLaguDaerahPage />}
       />
       <Route path="/admin/lagu-daerah" element={<LaguDaerahPage />} />
-      <Route
-        path="/admin/tarian/baru"
-        element={<TarianFormPage mode="create" />}
-      />
-      <Route
-        path="/admin/tarian/:slug/edit"
-        element={<TarianFormPage mode="edit" />}
-      />
+      <Route path="/admin/tarian/baru" element={<CreateTarianPage />} />
+      <Route path="/admin/tarian/:slug/edit" element={<EditTarianPage />} />
       <Route path="/admin/tarian" element={<TarianPage />} />
-      <Route
-        path="/admin/alat-musik/baru"
-        element={<AlatMusikFormPage mode="create" />}
-      />
+      <Route path="/admin/alat-musik/baru" element={<CreateAlatMusikPage />} />
       <Route
         path="/admin/alat-musik/:slug/edit"
-        element={<AlatMusikFormPage mode="edit" />}
+        element={<EditAlatMusikPage />}
       />
       <Route path="/admin/alat-musik" element={<AlatMusikPage />} />
       <Route
         path="/admin/senjata-tradisional/baru"
-        element={<SenjataTradisionalFormPage mode="create" />}
+        element={<CreateSenjataTradisionalPage />}
       />
       <Route
         path="/admin/senjata-tradisional/:slug/edit"
-        element={<SenjataTradisionalFormPage mode="edit" />}
+        element={<EditSenjataTradisionalPage />}
       />
       <Route
         path="/admin/senjata-tradisional"
@@ -108,38 +105,29 @@ export default function App() {
       />
       <Route
         path="/admin/pakaian-adat/baru"
-        element={<PakaianAdatFormPage mode="create" />}
+        element={<CreatePakaianAdatPage />}
       />
       <Route
         path="/admin/pakaian-adat/:slug/edit"
-        element={<PakaianAdatFormPage mode="edit" />}
+        element={<EditPakaianAdatPage />}
       />
       <Route path="/admin/pakaian-adat" element={<PakaianAdatPage />} />
-      <Route
-        path="/admin/rumah-adat/baru"
-        element={<RumahAdatFormPage mode="create" />}
-      />
+      <Route path="/admin/rumah-adat/baru" element={<CreateRumahAdatPage />} />
       <Route
         path="/admin/rumah-adat/:slug/edit"
-        element={<RumahAdatFormPage mode="edit" />}
+        element={<EditRumahAdatPage />}
       />
       <Route path="/admin/rumah-adat" element={<RumahAdatAdminPage />} />
-      <Route
-        path="/admin/makanan/baru"
-        element={<MakananFormPage mode="create" />}
-      />
-      <Route
-        path="/admin/makanan/:slug/edit"
-        element={<MakananFormPage mode="edit" />}
-      />
+      <Route path="/admin/makanan/baru" element={<CreateMakananPage />} />
+      <Route path="/admin/makanan/:slug/edit" element={<EditMakananPage />} />
       <Route path="/admin/makanan" element={<MakananAdminPage />} />
       <Route
         path="/admin/daerah-provinsi/baru"
-        element={<DaerahProvinsiFormPage mode="create" />}
+        element={<CreateDaerahProvinsiPage />}
       />
       <Route
         path="/admin/daerah-provinsi/:slug/edit"
-        element={<DaerahProvinsiFormPage mode="edit" />}
+        element={<EditDaerahProvinsiPage />}
       />
       <Route path="/admin/daerah-provinsi" element={<DaerahProvinsiPage />} />
     </Routes>

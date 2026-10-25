@@ -972,8 +972,16 @@ export default function MusikPage() {
             navigate("/admin/rumah-adat")
             return
           }
+          if (label === "Tarian") {
+            navigate("/admin/tarian")
+            return
+          }
           if (label === "Lagu Daerah") {
             navigate("/admin/musik")
+            return
+          }
+          if (label === "Alat Musik") {
+            navigate("/admin/alat-musik")
             return
           }
           notify(label)

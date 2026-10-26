@@ -241,6 +241,7 @@ export default function CreateAlatMusikPage() {
           else if (label === "Lagu Daerah") navigate("/admin/musik")
           else if (label === "Tarian") navigate("/admin/tarian")
           else if (label === "Alat Musik") navigate("/admin/alat-musik")
+          else if (label === "Senjata Tradisional") navigate("/admin/senjata")
           else if (label === "Rumah Adat") navigate("/admin/rumah-adat")
         }}
       />

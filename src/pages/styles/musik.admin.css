@@ -73,6 +73,7 @@ button { cursor: pointer; }
 .page-heading > div > span { display: block; margin-top: 10px; color: #817b73; font-size: 12px; }
 .add-button { display: none; align-items: center; gap: 9px; border: 0; border-radius: 10px; background: #b84e36; padding: 14px 21px; color: white; font-size: 12px; font-weight: 600; transition: .18s ease; }
 .tarian-add-button { display: flex; flex: 0 0 auto; }
+.senjata-add-button { display: flex; flex: 0 0 auto; }
 .add-button:hover { background: #993e2b; transform: translateY(-1px); }
 .add-button svg { width: 16px; }
 
@@ -97,6 +98,7 @@ button { cursor: pointer; }
 .instrument-card:hover { transform: translateY(-2px); box-shadow: 0 13px 30px rgb(62 45 28 / 10%); }
 .instrument-card > img { width: 100%; height: 210px; object-fit: cover; filter: saturate(.82) contrast(.96); }
 .instrument-card > .house-image-placeholder { display: grid; width: 100%; height: 210px; place-items: center; background: #e8dfd0; color: #817b73; font-size: 12px; }
+.instrument-card > .house-image-placeholder img { width: 100%; height: 210px; object-fit: cover; filter: saturate(.82) contrast(.96); }
 .card-content { display: flex; min-height: 221px; flex: 1; flex-direction: column; padding: 18px 18px 0; }
 .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #b34732; font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
 .status { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; background: #e7ece3; padding: 6px 10px; color: #415c4a; font-size: 9px; font-weight: 500; letter-spacing: 0; text-transform: none; }

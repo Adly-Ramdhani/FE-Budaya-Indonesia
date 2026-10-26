@@ -984,6 +984,10 @@ export default function MusikPage() {
             navigate("/admin/alat-musik")
             return
           }
+          if (label === "Senjata Tradisional") {
+            navigate("/admin/senjata")
+            return
+          }
           notify(label)
         }}
       />

@@ -53,7 +53,7 @@ export default function CreateTarianPage() {
 
     async function loadProvinces() {
       try {
-        const response = await fetch(getApiUrl("/api/provinces"), {
+        const response = await fetch(getApiUrl("/v1/provinces"), {
           signal: controller.signal,
           headers: {
             Accept: "application/json",
@@ -111,7 +111,7 @@ export default function CreateTarianPage() {
       if (image) formData.append("image", image)
 
       const token = getAuthToken()
-      const response = await fetch(getApiUrl("/api/dances"), {
+      const response = await fetch(getApiUrl("/v1/dances"), {
         method: "POST",
         headers: {
           Accept: "application/json",

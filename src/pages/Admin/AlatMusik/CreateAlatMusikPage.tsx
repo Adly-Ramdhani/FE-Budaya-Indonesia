@@ -94,8 +94,8 @@ export default function CreateAlatMusikPage() {
         "ngrok-skip-browser-warning": "true",
       }
       const [islandResult, provinceResult] = await Promise.allSettled([
-        fetch(getApiUrl("/api/islands"), { signal: controller.signal, headers }),
-        fetch(getApiUrl("/api/provinces"), {
+        fetch(getApiUrl("/v1/islands"), { signal: controller.signal, headers }),
+        fetch(getApiUrl("/v1/provinces"), {
           signal: controller.signal,
           headers,
         }),
@@ -206,7 +206,7 @@ export default function CreateAlatMusikPage() {
       if (image) formData.append("image", image)
 
       const token = getAuthToken()
-      const response = await fetch(getApiUrl("/api/musical-instruments"), {
+      const response = await fetch(getApiUrl("/v1/musical-instruments"), {
         method: "POST",
         headers: {
           Accept: "application/json",

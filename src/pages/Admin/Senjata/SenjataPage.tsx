@@ -101,7 +101,7 @@ export default function SenjataPage() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch(getApiUrl("/api/traditional-weapons"), {
+      const response = await fetch(getApiUrl("/v1/traditional-weapons"), {
         signal,
         headers: {
           Accept: "application/json",
@@ -142,11 +142,11 @@ export default function SenjataPage() {
         "ngrok-skip-browser-warning": "true",
       }
       const [islandResult, provinceResult] = await Promise.allSettled([
-        fetch(getApiUrl("/api/islands"), {
+        fetch(getApiUrl("/v1/islands"), {
           signal: controller.signal,
           headers,
         }),
-        fetch(getApiUrl("/api/provinces"), {
+        fetch(getApiUrl("/v1/provinces"), {
           signal: controller.signal,
           headers,
         }),
@@ -280,7 +280,7 @@ export default function SenjataPage() {
     const token = getAuthToken()
     try {
       const response = await fetch(
-        getApiUrl(`/api/traditional-weapons/${weapon.id}`),
+        getApiUrl(`/v1/traditional-weapons/${weapon.id}`),
         {
           method: "DELETE",
           headers: {

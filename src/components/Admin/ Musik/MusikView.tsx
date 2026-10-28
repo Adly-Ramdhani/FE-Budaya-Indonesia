@@ -285,7 +285,7 @@ export default function MusikView({
             Sedang memuat data lagu dari server API...
           </p>
           <span style={{ fontSize: 13, color: "#8a918b" }}>
-            Mengambil koleksi dari {apiUrl || "/api/songs"}
+            Mengambil koleksi dari {apiUrl || "/v1/songs"}
           </span>
         </div>
       ) : filtered.length ? (

@@ -246,7 +246,7 @@ export default function TarianView({
         <section className="result-bar" aria-live="polite">
           <b>{loading ? "Memuat tarian..." : `${dances.length} tarian`}</b>
           <span>
-            {error ? `API bermasalah (${error})` : "Data dari API /api/dances"}
+            {error ? `API bermasalah (${error})` : "Data dari API /v1/dances"}
           </span>
           <span>Urutan: Terakhir diperbarui</span>
         </section>
@@ -309,7 +309,7 @@ export default function TarianView({
             <p>
               {query || province || filterIslandId || status !== "Semua status"
                 ? "Coba ubah atau atur ulang filter."
-                : "Belum ada data yang tersedia dari API /api/dances."}
+                : "Belum ada data yang tersedia dari API /v1/dances."}
             </p>
             {(query || province || filterIslandId || status !== "Semua status") && (
               <button type="button" onClick={onResetFilters}>

@@ -90,9 +90,17 @@ function formatDate(dateStr?: string): string {
 function resolveAudioUrl(url?: string): string {
   if (!url) return ""
   let resolved = url.trim()
+  if (!resolved) return ""
+
   if (API_URL) {
     resolved = resolved.replace(/^http:\/\/(127\.0\.0\.1|localhost):8000/, API_URL)
   }
+
+  if (!/^https?:\/\//i.test(resolved)) {
+    const baseUrl = API_URL || window.location.origin
+    resolved = `${baseUrl}/${resolved.replace(/^\/+/, "")}`
+  }
+
   if (resolved.startsWith("http://") && typeof window !== "undefined" && window.location.protocol === "https:") {
     resolved = resolved.replace(/^http:\/\//, "https://")
   }
@@ -127,7 +135,7 @@ async function fetchProvincesByIsland(
   signal: AbortSignal,
 ): Promise<Province[]> {
   const params = new URLSearchParams({ island_id: islandId })
-  const res = await fetch(getApiUrl(`/api/provinces?${params.toString()}`), {
+  const res = await fetch(getApiUrl(`/v1/provinces?${params.toString()}`), {
     signal,
     headers: API_HEADERS,
   })
@@ -345,7 +353,7 @@ export default function MusikPage() {
       setEditLoading(true)
       setEditError(null)
       try {
-        const response = await fetch(getApiUrl(`/api/songs/${songId}`), {
+        const response = await fetch(getApiUrl(`/v1/songs/${songId}`), {
           signal: controller.signal,
           headers: API_HEADERS,
         })
@@ -452,7 +460,7 @@ export default function MusikPage() {
     async function fetchIslands() {
       setIslandsLoading(true)
       try {
-        const res = await fetch(getApiUrl("/api/islands"), {
+        const res = await fetch(getApiUrl("/v1/islands"), {
           signal: controller.signal,
           headers: API_HEADERS,
         })
@@ -547,7 +555,7 @@ export default function MusikPage() {
     return () => controller.abort()
   }, [filterIslandId])
 
-  // Mengambil data murni dari API: /api/songs
+  
   useEffect(() => {
     if (isHousePage) {
       setLoading(false)
@@ -558,7 +566,7 @@ export default function MusikPage() {
     async function fetchSongs() {
       setLoading(true)
       try {
-        const res = await fetch(getApiUrl("/api/songs"), {
+        const res = await fetch(getApiUrl("/v1/songs"), {
           signal: controller.signal,
           headers: API_HEADERS,
         })
@@ -595,8 +603,8 @@ export default function MusikPage() {
                 item.description ??
                 "Warisan melodi tradisional dan cerita Nusantara.",
               lyrics: item.lyrics ?? "",
-              audio: item.audio_url?.replace(/^http:\/\//, "https://") || audioSrc,
-              audio_url: item.audio_url?.replace(/^http:\/\//, "https://") || audioSrc,
+              audio: audioSrc,
+              audio_url: audioSrc,
               updated: formatDate(item.updated_at ?? item.created_at),
             }
           })
@@ -636,7 +644,7 @@ export default function MusikPage() {
     [items, province, query, region, status],
   )
 
-  // Simpan lagu baru ke backend: POST /api/songs
+  // Simpan lagu baru ke backend: POST /v1/songs
   const addSong = async (event: React.FormEvent) => {
     event.preventDefault()
     if (saving) return
@@ -662,7 +670,7 @@ export default function MusikPage() {
 
     setSaving(true)
     try {
-      const res = await fetch(getApiUrl("/api/songs"), {
+      const res = await fetch(getApiUrl("/v1/songs"), {
         method: "POST",
         // jangan set Content-Type, browser mengaturnya otomatis untuk FormData
         headers: {
@@ -753,7 +761,7 @@ export default function MusikPage() {
     const token = getAuthToken()
     setSaving(true)
     try {
-      const response = await fetch(getApiUrl(`/api/songs/${songId}`), {
+      const response = await fetch(getApiUrl(`/v1/songs/${songId}`), {
         method: "POST",
         headers: {
           ...API_HEADERS,
@@ -871,7 +879,7 @@ export default function MusikPage() {
     try {
       const token = getAuthToken()
 
-      const res = await fetch(getApiUrl(`/api/songs/${selected.id}`), {
+      const res = await fetch(getApiUrl(`/v1/songs/${selected.id}`), {
         method: "DELETE",
         headers: {
           ...API_HEADERS,
@@ -924,7 +932,7 @@ export default function MusikPage() {
     try {
       const token = getAuthToken()
       const response = await fetch(
-        getApiUrl(`/api/traditional-houses/${selected.id}`),
+        getApiUrl(`/v1/traditional-houses/${selected.id}`),
         {
           method: "DELETE",
           headers: {
@@ -1096,7 +1104,7 @@ export default function MusikPage() {
           />
         ) : (
           <MusikView
-            apiUrl={getApiUrl("/api/songs")}
+            apiUrl={getApiUrl("/v1/songs")}
             apiError={apiError}
             filterIslandId={filterIslandId}
             filterProvinces={filterProvinces}

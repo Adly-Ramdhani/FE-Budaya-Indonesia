@@ -36,13 +36,13 @@ type ContentItem = {
 }
 
 const categories = [
-  { label: "Lagu Daerah", endpoint: "/api/songs", icon: Music2 },
-  { label: "Tarian", endpoint: "/api/dances", icon: PersonStanding },
-  { label: "Alat Musik", endpoint: "/api/musical-instruments", icon: Drum },
-  { label: "Senjata Tradisional", endpoint: "/api/traditional-weapons", icon: Swords },
+  { label: "Lagu Daerah", endpoint: "/v1/songs", icon: Music2 },
+  { label: "Tarian", endpoint: "/v1/dances", icon: PersonStanding },
+  { label: "Alat Musik", endpoint: "/v1/musical-instruments", icon: Drum },
+  { label: "Senjata Tradisional", endpoint: "/v1/traditional-weapons", icon: Swords },
   { label: "Pakaian Adat", icon: Shirt },
-  { label: "Rumah Adat", endpoint: "/api/traditional-houses", icon: House },
-  { label: "Makanan", endpoint: "/api/foods", icon: Utensils },
+  { label: "Rumah Adat", endpoint: "/v1/traditional-houses", icon: House },
+  { label: "Makanan", endpoint: "/v1/foods", icon: Utensils },
 ]
 
 const islands = [

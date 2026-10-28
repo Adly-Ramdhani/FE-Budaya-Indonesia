@@ -299,7 +299,7 @@ export default function MusikPage() {
       setItemsLoading(true)
       setItemsError(null)
       try {
-        const response = await fetch(getApiUrl("/api/musical-instruments"), {
+        const response = await fetch(getApiUrl("/v1/musical-instruments"), {
           signal: controller.signal,
           headers: {
             Accept: "application/json",
@@ -332,14 +332,14 @@ export default function MusikPage() {
 
     async function loadLocations() {
       const [islandResult, provinceResult] = await Promise.allSettled([
-        fetch(getApiUrl("/api/islands"), {
+        fetch(getApiUrl("/v1/islands"), {
           signal: controller.signal,
           headers: {
             Accept: "application/json",
             "ngrok-skip-browser-warning": "true",
           },
         }),
-        fetch(getApiUrl("/api/provinces"), {
+        fetch(getApiUrl("/v1/provinces"), {
           signal: controller.signal,
           headers: {
             Accept: "application/json",
@@ -480,7 +480,7 @@ export default function MusikPage() {
     try {
       const token = getAuthToken()
       const response = await fetch(
-        getApiUrl(`/api/musical-instruments/${instrument.id}`),
+        getApiUrl(`/v1/musical-instruments/${instrument.id}`),
         {
           method: "DELETE",
           headers: {

@@ -103,7 +103,7 @@ export default function TarianPage() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch(getApiUrl("/api/dances"), {
+      const response = await fetch(getApiUrl("/v1/dances"), {
         signal,
         headers: {
           Accept: "application/json",
@@ -137,7 +137,7 @@ export default function TarianPage() {
     const controller = new AbortController()
     async function loadProvinces() {
       try {
-        const response = await fetch(getApiUrl("/api/provinces"), {
+        const response = await fetch(getApiUrl("/v1/provinces"), {
           signal: controller.signal,
           headers: {
             Accept: "application/json",
@@ -181,7 +181,7 @@ export default function TarianPage() {
     async function loadIslands() {
       setIslandsLoading(true)
       try {
-        const response = await fetch(getApiUrl("/api/islands"), {
+        const response = await fetch(getApiUrl("/v1/islands"), {
           signal: controller.signal,
           headers: {
             Accept: "application/json",
@@ -251,7 +251,7 @@ export default function TarianPage() {
     try {
       const response = await fetch(
         getApiUrl(
-          editingDance ? `/api/dances/${editingDance.id}` : "/api/dances",
+          editingDance ? `/v1/dances/${editingDance.id}` : "/v1/dances",
         ),
         {
           method: "POST",
@@ -362,7 +362,7 @@ export default function TarianPage() {
 
     const token = getAuthToken()
     try {
-      const response = await fetch(getApiUrl(`/api/dances/${dance.id}`), {
+      const response = await fetch(getApiUrl(`/v1/dances/${dance.id}`), {
         method: "DELETE",
         headers: {
           Accept: "application/json",

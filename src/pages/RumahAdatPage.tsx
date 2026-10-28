@@ -31,7 +31,7 @@ function useHouses() {
   useEffect(() => {
     const controller = new AbortController()
 
-    fetch(`${API_URL}/api/traditional-houses`, {
+    fetch(`${API_URL}/v1/traditional-houses`, {
       signal: controller.signal,
       headers: {
         Accept: "application/json",

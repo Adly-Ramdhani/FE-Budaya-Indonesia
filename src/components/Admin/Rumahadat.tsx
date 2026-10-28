@@ -196,7 +196,7 @@ export default function Rumahadat({
     async function fetchHouses() {
       setLoading(true)
       try {
-        const response = await fetch(`${apiUrl}/api/traditional-houses`, {
+        const response = await fetch(`${apiUrl}/v1/traditional-houses`, {
           signal: controller.signal,
           headers: {
             Accept: "application/json",

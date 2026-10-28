@@ -217,7 +217,7 @@ export default function SenjataView({
           <span>
             {error
               ? `API bermasalah (${error})`
-              : "Data dari API /api/traditional-weapons"}
+              : "Data dari API /v1/traditional-weapons"}
           </span>
           <span>Urutan: Terakhir diperbarui</span>
         </section>
@@ -287,7 +287,7 @@ export default function SenjataView({
             <p>
               {query || province || filterIslandId || status !== "Semua status"
                 ? "Coba ubah atau atur ulang filter."
-                : "Belum ada data yang tersedia dari API /api/traditional-weapons."}
+                : "Belum ada data yang tersedia dari API /v1/traditional-weapons."}
             </p>
             {(query || province || filterIslandId || status !== "Semua status") && (
               <button type="button" onClick={onResetFilters}>

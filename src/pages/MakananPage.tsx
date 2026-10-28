@@ -30,7 +30,7 @@ function useDishes() {
   useEffect(() => {
     const controller = new AbortController()
 
-    fetch(`${API_URL}/api/foods`, {
+    fetch(`${API_URL}/v1/foods`, {
       signal: controller.signal,
       headers: {
         Accept: "application/json",

@@ -131,12 +131,12 @@ export default function EditAlatMusikPage() {
 
       const [instrumentResult, islandsResult, provincesResult] =
         await Promise.allSettled([
-          fetch(getApiUrl(`/api/musical-instruments/${instrumentId}`), {
+          fetch(getApiUrl(`/v1/musical-instruments/${instrumentId}`), {
             signal: controller.signal,
             headers,
           }),
-          fetch(getApiUrl("/api/islands"), { signal: controller.signal, headers }),
-          fetch(getApiUrl("/api/provinces"), {
+          fetch(getApiUrl("/v1/islands"), { signal: controller.signal, headers }),
+          fetch(getApiUrl("/v1/provinces"), {
             signal: controller.signal,
             headers,
           }),
@@ -297,7 +297,7 @@ export default function EditAlatMusikPage() {
 
       const token = getAuthToken()
       const response = await fetch(
-        getApiUrl(`/api/musical-instruments/${instrumentId}`),
+        getApiUrl(`/v1/musical-instruments/${instrumentId}`),
         {
           method: "POST",
           headers: {

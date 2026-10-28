@@ -518,7 +518,7 @@ function useSongs() {
             return
         }
 
-        fetch(`${API_URL}/api/songs`, {
+        fetch(`${API_URL}/v1/songs`, {
             signal: controller.signal,
             headers: {
                 Accept: "application/json",

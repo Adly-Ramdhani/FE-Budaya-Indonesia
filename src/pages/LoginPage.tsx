@@ -31,7 +31,8 @@ export default function LoginPage() {
       setError("Email dan password wajib diisi.");
       return;
     }
-
+  
+    
     setLoading(true);
     try {
      const res = await fetch(`${API_BASE}/v1/login`, {

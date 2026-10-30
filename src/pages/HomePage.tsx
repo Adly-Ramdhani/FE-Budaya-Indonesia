@@ -1218,13 +1218,13 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
             pengantar; ragam, sebutan, dan praktiknya dapat berbeda di setiap
             komunitas.
           </div>
-        </div>
-        <div className="shell copyright">
-          <span>© 2026 Purwa Nusantara. Merayakan warisan bersama.</span>
-          <span>
-            <a href="#top">Privasi</a>
-            <a href="#top">Ketentuan penggunaan</a>
-          </span>
+          <div className="copyright">
+            <span>© 2026 Purwa Nusantara. Merayakan warisan bersama.</span>
+            <span>
+              <a href="#top">Privasi</a>
+              <a href="#top">Ketentuan penggunaan</a>
+            </span>
+          </div>
         </div>
       </footer>
     </main>

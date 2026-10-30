@@ -692,6 +692,10 @@ h1 {
   color: #ebf2e9;
 }
 
+.section-intro--dark h2 {
+  color: #f8f2e5;
+}
+
 .split {
   display: grid;
   grid-template-columns: minmax(0, 560px) 1fr;

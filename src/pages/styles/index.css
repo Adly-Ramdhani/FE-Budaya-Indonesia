@@ -718,6 +718,15 @@ h1 {
   grid-template-columns: 1fr minmax(0, 560px);
 }
 
+.culture-section--dark .split {
+  align-items: stretch;
+}
+
+.culture-section--dark .feature-image {
+  height: auto;
+  min-height: 220px;
+}
+
 .story-list {
   border-bottom: 1px solid var(--line);
 }

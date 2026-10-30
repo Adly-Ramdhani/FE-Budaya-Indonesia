@@ -98,18 +98,6 @@ export default function LoginPage() {
             Setiap cerita yang dirawat hari ini menjadi ingatan untuk generasi
             berikutnya.
           </p>
-
-          <figure className="culture-figure">
-            <img
-              src="/tenun-ikat-flores.jpg"
-              alt="Proses pembuatan kain tenun tradisional"
-            />
-
-            <figcaption>
-              <span>Tenun Ikat Flores · Nusa Tenggara Timur</span>
-              <Diamond size={14} />
-            </figcaption>
-          </figure>
         </div>
 
         <p className="story-footer">Mengenal warisan, menghargai keberagaman.</p>
@@ -202,10 +190,6 @@ export default function LoginPage() {
                   />
                   <span>Ingat saya</span>
                 </label>
-
-                <a className="text-link" href="/lupa-password">
-                  Lupa password?
-                </a>
               </div>
 
               <button className="submit-button" type="submit" disabled={loading}>

@@ -93,28 +93,6 @@ h1 {
   margin: 0 0 22px;
 }
 
-.culture-figure {
-  margin: 0;
-}
-
-.culture-figure img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1.58 / 1;
-  object-fit: cover;
-  border-radius: 11px;
-}
-
-.culture-figure figcaption {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 12px;
-  color: #d0d7cf;
-  font-size: 9px;
-}
-
 .story-footer {
   margin-top: auto;
   padding-top: 12px;
@@ -345,10 +323,6 @@ form input::placeholder {
 
   h1 {
     font-size: 36px;
-  }
-
-  .culture-figure img {
-    max-height: 260px;
   }
 
   .story-footer {

@@ -442,7 +442,7 @@ export default function AdminDashboard() {
             </section>
             <section className={styles.quickPanel} aria-labelledby="quick-title">
               <h2 id="quick-title">Aksi cepat</h2><p>Mulai cerita baru dari kategori pilihan.</p>
-              <div className={styles.quickGrid}>{[...categories, { label: "Unggah Media", icon: ImagePlus }].map(({ label, icon: Icon }) => <button key={label} onClick={() => label === "Pakaian Adat" ? navigate("/admin/baju-adat") : openForm("add", undefined, label === "Unggah Media" ? "Lagu Daerah" : label)}><Icon size={15} />{label === "Unggah Media" ? "Unggah Media" : `Tambah ${label === "Lagu Daerah" ? "Lagu" : label === "Senjata Tradisional" ? "Senjata" : label === "Pakaian Adat" ? "Pakaian" : label}`}</button>)}</div>
+              <div className={styles.quickGrid}>{[...categories, { label: "Unggah Media", icon: ImagePlus }].map(({ label, icon: Icon }) => <button key={label} onClick={() => label === "Pakaian Adat" ? navigate("/admin/baju-adat") : label === "Makanan" ? navigate("/admin/makanan") : openForm("add", undefined, label === "Unggah Media" ? "Lagu Daerah" : label)}><Icon size={15} />{label === "Unggah Media" ? "Unggah Media" : `Tambah ${label === "Lagu Daerah" ? "Lagu" : label === "Senjata Tradisional" ? "Senjata" : label === "Pakaian Adat" ? "Pakaian" : label}`}</button>)}</div>
               <a className={styles.guideLink} href="#panduan" onClick={(event) => { event.preventDefault(); setNotice("Panduan penulisan konten akan tersedia di ruang redaksi.") }}><CircleHelp size={16} />Panduan penulisan konten <ArrowRight size={14} /></a>
             </section>
           </div>

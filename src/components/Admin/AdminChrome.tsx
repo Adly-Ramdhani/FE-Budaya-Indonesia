@@ -98,6 +98,7 @@ export function AdminSidebar({
                   onClick={() => {
                     onSelect(label)
                     if (label === "Pakaian Adat") navigate("/admin/baju-adat")
+                    if (label === "Makanan") navigate("/admin/makanan")
                     onClose()
                   }}
                 >

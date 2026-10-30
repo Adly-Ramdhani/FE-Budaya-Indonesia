@@ -10,6 +10,9 @@ export type TraditionalWeapon = {
   description: string
   status: string
   image?: string
+  ingredients?: string
+  videoUrl?: string
+  videoCopyright?: string
 }
 
 export type Island = {
@@ -27,6 +30,7 @@ type SenjataViewProps = {
   contentTitle?: string
   itemLabel?: string
   endpointLabel?: string
+  showIngredients?: boolean
   weapons: TraditionalWeapon[]
   islands: Island[]
   provinces: Province[]
@@ -86,6 +90,7 @@ export default function SenjataView({
   contentTitle = "Senjata Tradisional Nusantara",
   itemLabel = "senjata",
   endpointLabel = "/v1/traditional-weapons",
+  showIngredients = true,
   weapons,
   islands,
   provinces,
@@ -259,6 +264,14 @@ export default function SenjataView({
                   </div>
                   <h3>{weapon.name}</h3>
                   <p className="card-description">{weapon.description}</p>
+                  {weapon.videoUrl && (
+                    <p className="card-description">
+                      <a href={weapon.videoUrl} target="_blank" rel="noreferrer">
+                        Video resep
+                      </a>
+                      {weapon.videoCopyright && ` · ${weapon.videoCopyright}`}
+                    </p>
+                  )}
                   <button
                     className="preview-link"
                     type="button"

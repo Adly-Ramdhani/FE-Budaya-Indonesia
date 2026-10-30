@@ -66,11 +66,11 @@ export function AdminSidebar({
         onClick={onClose}
       />
       <aside className={`${styles.sidebar} ${open ? styles.sidebarOpen : ""}`}>
-        <a href="/" className={styles.brand} aria-label="Budaya Indonesia, beranda">
+        <a href="/" className={styles.brand} aria-label="Purwa Nusantara, beranda">
           <span className={styles.brandMark}>
             <Shield size={23} strokeWidth={1.55} />
           </span>
-          <span>Budaya Indonesia</span>
+          <span>Purwa Nusantara</span>
         </a>
         <div className={styles.sidebarLabel}>Panel admin</div>
         <button

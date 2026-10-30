@@ -475,7 +475,7 @@ export default function BajuAdatPage() {
           onDelete={(attire) => void deleteAttire(attire)}
         />
         <footer>
-          <span>© 2026 Budaya Indonesia · Merawat cerita bersama.</span>
+          <span>© 2026 Purwa Nusantara · Merawat cerita bersama.</span>
           <span>Data Pakaian Adat Nusantara</span>
         </footer>
         {formOpen && (

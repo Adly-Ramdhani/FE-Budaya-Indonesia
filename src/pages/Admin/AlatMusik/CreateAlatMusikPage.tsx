@@ -284,7 +284,7 @@ export default function CreateAlatMusikPage() {
           onSubmit={saveInstrument}
         />
         <footer>
-          <span>© 2026 Budaya Indonesia · Merawat cerita bersama.</span>
+          <span>© 2026 Purwa Nusantara · Merawat cerita bersama.</span>
           <span>Data Alat Musik Nusantara</span>
         </footer>
       </main>

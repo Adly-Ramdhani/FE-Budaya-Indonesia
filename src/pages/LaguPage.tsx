@@ -621,13 +621,13 @@ const JelajahiLagu: FunctionComponent = () => {
         <div className={styles.jelajahiLagu}>
             <div className={styles.navigasiDanPengantar}>
                 <nav className={styles.navigasi}>
-                    <Link to="/" className={styles.identitasSitus} aria-label="Budaya Indonesia">
+                    <Link to="/" className={styles.identitasSitus} aria-label="Purwa Nusantara">
                         <img
                             className={styles.lambangTenunIcon}
                             alt=""
                             src="/assets/3eee3.svg"
                         />
-                        <div className={styles.namaSitus}>Budaya Indonesia</div>
+                        <div className={styles.namaSitus}>Purwa Nusantara</div>
                     </Link>
                     <div className={styles.menuUtama}>
                         <Link to="/" className={styles.namaSitus}>
@@ -641,9 +641,6 @@ const JelajahiLagu: FunctionComponent = () => {
                                 src="/assets/bb805.svg"
                             />
                         </div>
-                        <Link to="/#cerita" className={styles.namaSitus}>
-                            Cerita Nusantara
-                        </Link>
                         <Link to="/#tentang" className={styles.namaSitus}>
                             Tentang kami
                         </Link>
@@ -913,7 +910,7 @@ const JelajahiLagu: FunctionComponent = () => {
                 <footer className={styles.footer}>
                     <div className={styles.informasiSitus}>
                         <div className={styles.identitas}>
-                            <div className={styles.namaSitus}>Budaya Indonesia</div>
+                            <div className={styles.namaSitus}>Purwa Nusantara</div>
                             <div className={styles.semboyan}>
                                 Merawat warisan, menghubungkan cerita.
                             </div>
@@ -931,7 +928,7 @@ const JelajahiLagu: FunctionComponent = () => {
                         </div>
                     </div>
                     <div className={styles.hakCipta}>
-                        <div className={styles.namaSitus}>© 2026 Budaya Indonesia</div>
+                        <div className={styles.namaSitus}>© 2026 Purwa Nusantara</div>
                         <div className={styles.namaSitus}>
                             Ruang untuk mengenal dan menghargai Nusantara.
                         </div>

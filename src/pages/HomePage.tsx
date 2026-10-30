@@ -254,9 +254,9 @@ type Story = {
 
 function Brand() {
   return (
-    <a className="brand" href="#top" aria-label="Budaya Indonesia">
+    <a className="brand" href="#top" aria-label="Purwa Nusantara">
       <img src={icons.logo} alt="" />
-      <span>Budaya Indonesia</span>
+      <span>Purwa Nusantara</span>
     </a>
   )
 }
@@ -721,7 +721,6 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           <a href="#ragam">
             Ragam budaya <img src={icons.chevron} alt="" />
           </a>
-          <a href="#cerita">Cerita Nusantara</a>
           <a href="#tentang">Tentang kami</a>
         </div>
         {/* <div className="search">
@@ -1221,7 +1220,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           komunitas.
         </div>
         <div className="shell copyright">
-          <span>© 2026 Budaya Indonesia. Merayakan warisan bersama.</span>
+          <span>© 2026 Purwa Nusantara. Merayakan warisan bersama.</span>
           <span>
             <a href="#top">Privasi</a>
             <a href="#top">Ketentuan penggunaan</a>

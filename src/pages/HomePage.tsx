@@ -1014,7 +1014,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           <span>
             Tiga cerita untuk memulai. Masih banyak warisan untuk dikenali.
           </span>
-          <ArrowLink>Jelajahi tarian</ArrowLink>
+          <ArrowLink to="/jelajah/tarian">Jelajahi tarian</ArrowLink>
         </div>
       </div>
     </section>
@@ -1041,7 +1041,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
               {instruments.length > 0 && (
                 <StoryList stories={instruments.slice(0, 3)} />
               )}
-              <ArrowLink dark>Jelajahi alat musik</ArrowLink>
+              <ArrowLink to="/jelajah/alat-musik" dark>Jelajahi alat musik</ArrowLink>
             </div>
             <FeatureImage
               image="2489a.png"
@@ -1072,7 +1072,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
             <p>Belum ada data senjata tradisional.</p>
           )}
           {weapons.length > 0 && <StoryList stories={weapons.slice(0, 3)} />}
-          <ArrowLink>Jelajahi senjata tradisional</ArrowLink>
+          <ArrowLink to="/jelajah/senjata-tradisional">Jelajahi senjata tradisional</ArrowLink>
         </div>
         </div>
         <p className="editorial-note">
@@ -1103,7 +1103,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
               {traditionalAttires.length > 0 && (
                 <StoryList stories={traditionalAttires.slice(0, 3)} />
               )}
-              <ArrowLink>Jelajahi pakaian daerah</ArrowLink>
+              <ArrowLink to="/jelajah/pakaian-daerah">Jelajahi pakaian daerah</ArrowLink>
             </div>
           </div>
         </div>
@@ -1130,7 +1130,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
             Tiga cerita untuk memulai. Masih banyak warisan untuk dikenali.
           </span>
           
-           <ArrowLink to="/jelajah/rumah-adat">Jelajahi makanan</ArrowLink>
+          <ArrowLink to="/jelajah/rumah-adat">Jelajahi rumah adat</ArrowLink>
         </div>
       </div>
     </section>

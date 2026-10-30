@@ -512,6 +512,7 @@ export default function MakananAdminPage() {
           },
         },
       )
+      
       if (!response.ok) {
         const payload: unknown = await response.json().catch(() => ({}))
         const message =

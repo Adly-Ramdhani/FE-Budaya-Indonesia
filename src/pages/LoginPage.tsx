@@ -91,7 +91,7 @@ export default function LoginPage() {
       <section className="story-panel">
         <a className="brand" href="/">
           <Diamond size={25} strokeWidth={1.5} />
-          <span>Budaya Indonesia</span>
+          <span>Purwa Nusantara</span>
         </a>
 
         <div className="story-copy">
@@ -207,7 +207,7 @@ export default function LoginPage() {
             </form>
 
             <p className="card-footnote">
-              Khusus pengelola dan tim redaksi Budaya Indonesia.
+              Khusus pengelola dan tim redaksi Purwa Nusantara.
             </p>
           </section>
 
@@ -218,7 +218,7 @@ export default function LoginPage() {
         </div>
 
         <footer className="copyright">
-          © 2026 Budaya Indonesia · Merawat cerita bersama.
+          © 2026 Purwa Nusantara · Merawat cerita bersama.
         </footer>
       </section>
     </main>

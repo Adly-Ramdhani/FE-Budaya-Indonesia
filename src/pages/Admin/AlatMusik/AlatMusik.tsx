@@ -859,7 +859,7 @@ export default function MusikPage() {
         )}
 
         <footer>
-          <span>© 2026 Budaya Indonesia · Merawat cerita bersama.</span>
+          <span>© 2026 Purwa Nusantara · Merawat cerita bersama.</span>
           <span>Data dari API alat musik</span>
         </footer>
       </div>

@@ -376,7 +376,7 @@ export default function SenjataPage() {
           onDelete={(weapon) => void deleteWeapon(weapon)}
         />
         <footer>
-          <span>© 2026 Budaya Indonesia · Merawat cerita bersama.</span>
+          <span>© 2026 Purwa Nusantara · Merawat cerita bersama.</span>
           <span>Data Senjata Tradisional Nusantara</span>
         </footer>
         {previewWeapon && (

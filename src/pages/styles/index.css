@@ -688,6 +688,17 @@ h1 {
   line-height: 1.65;
 }
 
+.section-intro--stacked .intro-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.section-intro--stacked .intro-copy p {
+  max-width: 620px;
+}
+
 .section-intro--dark .intro-copy p {
   color: #ebf2e9;
 }
@@ -705,6 +716,15 @@ h1 {
 
 .split--reverse {
   grid-template-columns: 1fr minmax(0, 560px);
+}
+
+.culture-section--dark .split {
+  align-items: stretch;
+}
+
+.culture-section--dark .feature-image {
+  height: auto;
+  min-height: 220px;
 }
 
 .story-list {
@@ -921,8 +941,12 @@ h1 {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.25fr 1fr 280px;
-  gap: 72px;
+  grid-template-columns:
+    minmax(240px, 1.1fr)
+    minmax(250px, 1.1fr)
+    minmax(205px, 0.9fr)
+    minmax(280px, 1.1fr);
+  gap: 32px;
   padding-bottom: 44px;
 }
 
@@ -974,7 +998,8 @@ h1 {
 }
 
 .footer-note {
-  padding-block: 20px;
+  align-self: stretch;
+  padding-block: 18px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   color: var(--muted);
@@ -983,17 +1008,33 @@ h1 {
 }
 
 .copyright {
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
-  padding-block: 22px;
+  grid-column: 1 / -1;
+  justify-self: stretch;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 32px;
+  margin-top: 4px;
+  padding-block: 18px 4px;
+  border-top: 1px solid var(--line);
   color: var(--muted);
   font-size: 11px;
 }
 
+.copyright span:first-child {
+  grid-column: 1;
+  min-width: 0;
+  text-align: left;
+}
+
 .copyright span:last-child {
+  grid-column: 2;
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px 24px;
+  white-space: nowrap;
 }
 
 @media (max-width: 1050px) {
@@ -1012,10 +1053,15 @@ h1 {
   }
 
   .footer-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px;
   }
 
   .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer-note {
     grid-column: 1 / -1;
   }
 }
@@ -1114,7 +1160,17 @@ h1 {
   }
 
   .copyright {
-    flex-direction: column;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 12px;
+  }
+
+  .copyright span:first-child,
+  .copyright span:last-child {
+    grid-column: auto;
+  }
+
+  .copyright span:last-child {
+    justify-content: flex-start;
   }
 
    .gallery {

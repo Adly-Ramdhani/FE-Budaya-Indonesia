@@ -254,9 +254,9 @@ type Story = {
 
 function Brand() {
   return (
-    <a className="brand" href="#top" aria-label="Budaya Indonesia">
+    <a className="brand" href="#top" aria-label="Purwa Nusantara">
       <img src={icons.logo} alt="" />
-      <span>Budaya Indonesia</span>
+      <span>Purwa Nusantara</span>
     </a>
   )
 }
@@ -286,15 +286,19 @@ function SectionIntro({
   title,
   description,
   dark = false,
+  stacked = false,
 }: {
   number: string
   category: string
   title: string
   description: string
   dark?: boolean
+  stacked?: boolean
 }) {
   return (
-    <header className={`section-intro ${dark ? "section-intro--dark" : ""}`}>
+    <header
+      className={`section-intro ${dark ? "section-intro--dark" : ""} ${stacked ? "section-intro--stacked" : ""}`}
+    >
       <div className="eyebrow">
         <span>{number}</span>
         <i />
@@ -717,7 +721,6 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           <a href="#ragam">
             Ragam budaya <img src={icons.chevron} alt="" />
           </a>
-          <a href="#cerita">Cerita Nusantara</a>
           <a href="#tentang">Tentang kami</a>
         </div>
         {/* <div className="search">
@@ -1011,7 +1014,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           <span>
             Tiga cerita untuk memulai. Masih banyak warisan untuk dikenali.
           </span>
-          <ArrowLink>Jelajahi tarian</ArrowLink>
+          <ArrowLink to="/jelajah/tarian">Jelajahi tarian</ArrowLink>
         </div>
       </div>
     </section>
@@ -1024,6 +1027,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
             title="Dengarkan suara Nusantara."
             description="Bambu, kayu, dan dawai diolah menjadi bunyi yang khas. Setiap alat musik membawa jejak alam dan keterampilan pembuatnya."
             dark
+            stacked
           />
           <div className="split split--reverse">
             <div>
@@ -1037,7 +1041,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
               {instruments.length > 0 && (
                 <StoryList stories={instruments.slice(0, 3)} />
               )}
-              <ArrowLink dark>Jelajahi alat musik</ArrowLink>
+              <ArrowLink to="/jelajah/alat-musik" dark>Jelajahi alat musik</ArrowLink>
             </div>
             <FeatureImage
               image="2489a.png"
@@ -1068,7 +1072,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
             <p>Belum ada data senjata tradisional.</p>
           )}
           {weapons.length > 0 && <StoryList stories={weapons.slice(0, 3)} />}
-          <ArrowLink>Jelajahi senjata tradisional</ArrowLink>
+          <ArrowLink to="/jelajah/senjata-tradisional">Jelajahi senjata tradisional</ArrowLink>
         </div>
         </div>
         <p className="editorial-note">
@@ -1099,7 +1103,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
               {traditionalAttires.length > 0 && (
                 <StoryList stories={traditionalAttires.slice(0, 3)} />
               )}
-              <ArrowLink>Jelajahi pakaian daerah</ArrowLink>
+              <ArrowLink to="/jelajah/pakaian-daerah">Jelajahi pakaian daerah</ArrowLink>
             </div>
           </div>
         </div>
@@ -1126,7 +1130,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
             Tiga cerita untuk memulai. Masih banyak warisan untuk dikenali.
           </span>
           
-           <ArrowLink to="/jelajah/rumah-adat">Jelajahi makanan</ArrowLink>
+          <ArrowLink to="/jelajah/rumah-adat">Jelajahi rumah adat</ArrowLink>
         </div>
       </div>
     </section>
@@ -1177,8 +1181,8 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           <div className="footer-brand">
             <Brand />
             <p>
-              Ruang untuk mengenal warisan, merayakan perbedaan, dan mendekatkan
-              cerita budaya kepada kita semua.
+              Jelajahi lagu, tarian, alat musik, senjata tradisional, pakaian
+              daerah, rumah adat, dan makanan dari berbagai penjuru Indonesia.
             </p>
             <div className="socials">
               {(["instagram", "youtube", "facebook"] as const).map(
@@ -1203,24 +1207,20 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           <div>
             <h3>KENALI LEBIH DEKAT</h3>
             <div className="footer-links">
-              <a href="#tentang">Tentang kami</a>
-              <a href="#cerita">Cerita Nusantara</a>
-              <a href="#top">Sumber & referensi</a>
-              <a href="#top">Hubungi kami</a>
+              <a href="#tentang">Tentang Purwa Nusantara</a>
+              <a href="#ragam">Jelajahi ragam budaya</a>
+              <a href="#top">Kembali ke beranda</a>
             </div>
           </div>
-        </div>
-        <div className="shell footer-note">
-          Budaya terus hidup dan berkembang. Contoh di halaman ini adalah
-          pengantar; ragam, sebutan, dan praktiknya dapat berbeda di setiap
-          komunitas.
-        </div>
-        <div className="shell copyright">
-          <span>© 2026 Budaya Indonesia. Merayakan warisan bersama.</span>
-          <span>
-            <a href="#top">Privasi</a>
-            <a href="#top">Ketentuan penggunaan</a>
-          </span>
+          <div className="footer-note">
+            Setiap tradisi punya makna dan cerita. Sebutan serta praktiknya
+            dapat berbeda di tiap komunitas—mari mengenalnya dengan rasa ingin
+            tahu dan hormat.
+          </div>
+          <div className="copyright">
+            <span>© 2026 Purwa Nusantara.</span>
+            <span>Mengenal dan merayakan budaya Nusantara.</span>
+          </div>
         </div>
       </footer>
     </main>

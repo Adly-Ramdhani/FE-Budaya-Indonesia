@@ -199,7 +199,7 @@ export default function CreateTarianPage() {
           onSubmit={saveDance}
         />
         <footer>
-          <span>© 2026 Budaya Indonesia · Merawat cerita bersama.</span>
+          <span>© 2026 Purwa Nusantara · Merawat cerita bersama.</span>
           <span>Data Tarian Nusantara</span>
         </footer>
       </main>

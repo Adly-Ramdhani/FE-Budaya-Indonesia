@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
+import { getApiBaseUrl } from "../api"
 
 const assets = "/assets"
 
@@ -503,8 +504,8 @@ function SectionLabel({
 }
 
 
-const API_URL = import.meta.env.VITE_API_URL
-const API_BASE = API_URL?.replace(/\/$/, "")
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
+const API_BASE = API_URL
 
 function truncate(text = "", max = 120) {
   if (text.length <= max) return text
@@ -668,6 +669,11 @@ export default function HomePage() {
   useStories("/v1/traditional-houses")
   const { stories: foods, loading: foodsLoading, error: foodsError } =
   useStories("/v1/foods")
+  const {
+    stories: traditionalAttires,
+    loading: traditionalAttiresLoading,
+    error: traditionalAttiresError,
+  } = useStories("/v1/traditional-attires")
   const { stories: dances, loading: dancesLoading, error: dancesError } =
   useStories("/v1/dances")
 const { songs, loading: songsLoading, error: songsError } = useSongs()
@@ -1081,7 +1087,18 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           />
           <div className="split split--reverse">
             <div>
-              <p>Data pakaian daerah belum tersedia.</p>
+              {traditionalAttiresLoading && <p>Memuat data...</p>}
+              {traditionalAttiresError && (
+                <p>Gagal memuat data: {traditionalAttiresError}</p>
+              )}
+              {!traditionalAttiresLoading &&
+                !traditionalAttiresError &&
+                traditionalAttires.length === 0 && (
+                  <p>Belum ada data pakaian daerah.</p>
+                )}
+              {traditionalAttires.length > 0 && (
+                <StoryList stories={traditionalAttires.slice(0, 3)} />
+              )}
               <ArrowLink>Jelajahi pakaian daerah</ArrowLink>
             </div>
           </div>

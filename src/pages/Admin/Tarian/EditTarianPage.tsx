@@ -6,9 +6,9 @@ import EditeTarian from "../../../components/Admin/Tarian/EditeTarian"
 import { resolveTarianImage } from "../../../components/Admin/Tarian/tarianImage"
 import type { Province } from "../../../components/Admin/Tarian/TarianView"
 import styles from "../../AdminDashboard.module.css"
+import { getApiBaseUrl } from "../../../api"
 
-const rawApiUrl = import.meta.env.VITE_API_URL || ""
-const API_URL = rawApiUrl.trim().replace(/\/$/, "")
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 function getApiUrl(path: string): string {
   return API_URL ? `${API_URL}${path}` : path

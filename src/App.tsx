@@ -14,6 +14,7 @@ import TarianPage from "./pages/Admin/Tarian/TarianPage"
 import CreateTarianPage from "./pages/Admin/Tarian/CreateTarianPage"
 import EditTarianPage from "./pages/Admin/Tarian/EditTarianPage"
 import SenjataPage from "./pages/Admin/Senjata/SenjataPage"
+import BajuAdatPage from "./pages/Admin/BajuAdat/BajuAdatPage"
 import AdminDashboard from "./pages/AdminDashboard"
 
 function AdminRoute({ children }: { children: ReactNode }) {
@@ -56,6 +57,9 @@ export default function App() {
 
       // admin Senjata Tradisional
       <Route path="/admin/senjata" element={<AdminRoute><SenjataPage /></AdminRoute>} />
+
+      // admin Pakaian Adat
+      <Route path="/admin/baju-adat" element={<AdminRoute><BajuAdatPage /></AdminRoute>} />
 
       <Route path="/admin/rumah-adat" element={<AdminRoute> <AdminPage /></AdminRoute>} />
       <Route path="/dashboard" element={ <AdminRoute> <AdminDashboard /></AdminRoute> }/>

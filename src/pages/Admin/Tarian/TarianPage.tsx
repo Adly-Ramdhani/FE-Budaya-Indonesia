@@ -10,9 +10,9 @@ import TarianView, {
 } from "../../../components/Admin/Tarian/TarianView"
 import { resolveTarianImage } from "../../../components/Admin/Tarian/tarianImage"
 import styles from "../../AdminDashboard.module.css"
+import { getApiBaseUrl } from "../../../api"
 
-const rawApiUrl = import.meta.env.VITE_API_URL || ""
-const API_URL = rawApiUrl.trim().replace(/\/$/, "")
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 function getText(value: unknown): string {
   if (typeof value === "string" || typeof value === "number") return String(value)

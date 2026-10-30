@@ -22,6 +22,7 @@ import {
 } from "lucide-react"
 import styles from "./AdminDashboard.module.css"
 import { AdminSidebar, AdminTopbar } from "../components/Admin/AdminChrome"
+import { getApiBaseUrl } from "../api"
 
 type ContentItem = {
   id: string
@@ -40,7 +41,7 @@ const categories = [
   { label: "Tarian", endpoint: "/v1/dances", icon: PersonStanding },
   { label: "Alat Musik", endpoint: "/v1/musical-instruments", icon: Drum },
   { label: "Senjata Tradisional", endpoint: "/v1/traditional-weapons", icon: Swords },
-  { label: "Pakaian Adat", icon: Shirt },
+  { label: "Pakaian Adat", endpoint: "/v1/traditional-attires", icon: Shirt },
   { label: "Rumah Adat", endpoint: "/v1/traditional-houses", icon: House },
   { label: "Makanan", endpoint: "/v1/foods", icon: Utensils },
 ]
@@ -56,8 +57,7 @@ const islands = [
   "Papua",
 ]
 
-const rawApiUrl = import.meta.env.VITE_API_URL || ""
-const API_URL = rawApiUrl.trim().replace(/\/$/, "")
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 type CategoryCount = {
   count: number | null
@@ -442,7 +442,7 @@ export default function AdminDashboard() {
             </section>
             <section className={styles.quickPanel} aria-labelledby="quick-title">
               <h2 id="quick-title">Aksi cepat</h2><p>Mulai cerita baru dari kategori pilihan.</p>
-              <div className={styles.quickGrid}>{[...categories, { label: "Unggah Media", icon: ImagePlus }].map(({ label, icon: Icon }) => <button key={label} onClick={() => openForm("add", undefined, label === "Unggah Media" ? "Lagu Daerah" : label)}><Icon size={15} />{label === "Unggah Media" ? "Unggah Media" : `Tambah ${label === "Lagu Daerah" ? "Lagu" : label === "Senjata Tradisional" ? "Senjata" : label === "Pakaian Adat" ? "Pakaian" : label}`}</button>)}</div>
+              <div className={styles.quickGrid}>{[...categories, { label: "Unggah Media", icon: ImagePlus }].map(({ label, icon: Icon }) => <button key={label} onClick={() => label === "Pakaian Adat" ? navigate("/admin/baju-adat") : openForm("add", undefined, label === "Unggah Media" ? "Lagu Daerah" : label)}><Icon size={15} />{label === "Unggah Media" ? "Unggah Media" : `Tambah ${label === "Lagu Daerah" ? "Lagu" : label === "Senjata Tradisional" ? "Senjata" : label === "Pakaian Adat" ? "Pakaian" : label}`}</button>)}</div>
               <a className={styles.guideLink} href="#panduan" onClick={(event) => { event.preventDefault(); setNotice("Panduan penulisan konten akan tersedia di ruang redaksi.") }}><CircleHelp size={16} />Panduan penulisan konten <ArrowRight size={14} /></a>
             </section>
           </div>

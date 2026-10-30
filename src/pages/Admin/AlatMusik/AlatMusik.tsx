@@ -4,6 +4,7 @@ import { AdminSidebar } from "../../../components/Admin/AdminChrome"
 import { resolveTarianImage } from "../../../components/Admin/Tarian/tarianImage"
 import styles from "../../AdminDashboard.module.css"
 import "../../styles/musik.admin.css"
+import { getApiBaseUrl } from "../../../api"
 
 type Instrument = {
   id: number | string
@@ -31,7 +32,7 @@ type Province = {
 
 type IconName = "book" | "grid" | "search" | "bell" | "chevron" | "plus" | "list" | "edit" | "trash" | "arrow" | "logout" | "menu" | "close"
 
-const API_URL = (import.meta.env.VITE_API_URL || "").trim().replace(/\/$/, "")
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 function getApiUrl(path: string): string {
   return API_URL ? `${API_URL}${path}` : path

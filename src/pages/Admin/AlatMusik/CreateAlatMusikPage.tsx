@@ -4,6 +4,7 @@ import "../../styles/musik.admin.css"
 import { AdminSidebar, AdminTopbar } from "../../../components/Admin/AdminChrome"
 import CreateAlatMusik from "../../../components/Admin/AlatMusik/CreateAlatMusik"
 import styles from "../../AdminDashboard.module.css"
+import { getApiBaseUrl } from "../../../api"
 
 type Province = {
   id: string | number
@@ -16,7 +17,7 @@ type Island = {
   name: string
 }
 
-const API_URL = (import.meta.env.VITE_API_URL || "").trim().replace(/\/$/, "")
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 function getApiUrl(path: string): string {
   return API_URL ? `${API_URL}${path}` : path

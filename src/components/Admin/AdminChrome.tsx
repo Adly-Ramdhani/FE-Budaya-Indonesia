@@ -20,6 +20,7 @@ import {
   Users,
 } from "lucide-react"
 import styles from "../../pages/AdminDashboard.module.css"
+import { useNavigate } from "react-router-dom"
 
 const navigationGroups = [
   {
@@ -55,6 +56,8 @@ export function AdminSidebar({
   onClose: () => void
   onSelect: (label: string) => void
 }) {
+  const navigate = useNavigate()
+
   return (
     <>
       <button
@@ -94,6 +97,7 @@ export function AdminSidebar({
                   className={`${styles.navItem} ${activeItem === label ? styles.navActive : ""}`}
                   onClick={() => {
                     onSelect(label)
+                    if (label === "Pakaian Adat") navigate("/admin/baju-adat")
                     onClose()
                   }}
                 >

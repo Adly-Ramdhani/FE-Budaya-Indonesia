@@ -11,9 +11,9 @@ import Rumahadat, {
 } from "../../components/Admin/Rumahadat"
 import type { Instrument, Island, Province } from "../../components/Admin/types"
 import styles from "../AdminDashboard.module.css"
+import { getApiBaseUrl } from "../../api"
 
-const rawApiUrl = import.meta.env.VITE_API_URL || ""
-const API_URL = rawApiUrl.trim().replace(/\/$/, "")
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 const API_HEADERS = {
   Accept: "application/json",

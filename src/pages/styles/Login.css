@@ -72,13 +72,13 @@ input {
   margin: 0 0 20px;
 }
 
-h1,
-h2 {
+.login-layout h1,
+.login-layout h2 {
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 400;
 }
 
-h1 {
+.login-layout h1 {
   font-size: clamp(34px, 3.65vw, 41px);
   line-height: 1.1;
   letter-spacing: -1.2px;
@@ -91,28 +91,6 @@ h1 {
   line-height: 1.65;
   max-width: 390px;
   margin: 0 0 22px;
-}
-
-.culture-figure {
-  margin: 0;
-}
-
-.culture-figure img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1.58 / 1;
-  object-fit: cover;
-  border-radius: 11px;
-}
-
-.culture-figure figcaption {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 12px;
-  color: #d0d7cf;
-  font-size: 9px;
 }
 
 .story-footer {
@@ -154,7 +132,7 @@ h1 {
 }
 
 .form-wrap {
-  width: min(100%, 370px);
+  width: min(100%, 420px);
   margin: 58px auto 0;
 }
 
@@ -162,7 +140,7 @@ h1 {
   background: var(--card);
   border: 1px solid #dfd3bf;
   border-radius: 13px;
-  padding: 29px 29px 28px;
+  padding: 32px 32px 30px;
   box-shadow: 0 5px 12px #352b1b09;
 }
 
@@ -171,7 +149,7 @@ h1 {
   margin: 0 0 8px;
 }
 
-h2 {
+.login-layout h2 {
   /* color: #F8F2E5; */
   font-size: 25px;
   letter-spacing: -0.4px;
@@ -347,10 +325,6 @@ form input::placeholder {
     font-size: 36px;
   }
 
-  .culture-figure img {
-    max-height: 260px;
-  }
-
   .story-footer {
     margin-top: 27px;
   }
@@ -378,7 +352,7 @@ form input::placeholder {
     padding: 22px 16px;
   }
 
-  h2 {
+  .login-layout h2 {
     font-size: 22px;
   }
 

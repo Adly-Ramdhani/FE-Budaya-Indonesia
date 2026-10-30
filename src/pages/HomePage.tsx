@@ -286,15 +286,19 @@ function SectionIntro({
   title,
   description,
   dark = false,
+  stacked = false,
 }: {
   number: string
   category: string
   title: string
   description: string
   dark?: boolean
+  stacked?: boolean
 }) {
   return (
-    <header className={`section-intro ${dark ? "section-intro--dark" : ""}`}>
+    <header
+      className={`section-intro ${dark ? "section-intro--dark" : ""} ${stacked ? "section-intro--stacked" : ""}`}
+    >
       <div className="eyebrow">
         <span>{number}</span>
         <i />
@@ -1024,6 +1028,7 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
             title="Dengarkan suara Nusantara."
             description="Bambu, kayu, dan dawai diolah menjadi bunyi yang khas. Setiap alat musik membawa jejak alam dan keterampilan pembuatnya."
             dark
+            stacked
           />
           <div className="split split--reverse">
             <div>

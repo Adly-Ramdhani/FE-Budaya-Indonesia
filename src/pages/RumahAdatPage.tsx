@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom"
 import { useEffect, useMemo, useState } from "react"
+import { getApiBaseUrl } from "../api"
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 type House = {
   id: string | number
@@ -31,7 +32,7 @@ function useHouses() {
   useEffect(() => {
     const controller = new AbortController()
 
-    fetch(`${API_URL}/api/traditional-houses`, {
+    fetch(`${API_URL}/v1/traditional-houses`, {
       signal: controller.signal,
       headers: {
         Accept: "application/json",

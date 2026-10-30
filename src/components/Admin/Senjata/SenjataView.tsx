@@ -24,6 +24,9 @@ export type Province = {
 }
 
 type SenjataViewProps = {
+  contentTitle?: string
+  itemLabel?: string
+  endpointLabel?: string
   weapons: TraditionalWeapon[]
   islands: Island[]
   provinces: Province[]
@@ -80,6 +83,9 @@ export function WeaponImage({ src, alt }: { src?: string; alt: string }) {
 }
 
 export default function SenjataView({
+  contentTitle = "Senjata Tradisional Nusantara",
+  itemLabel = "senjata",
+  endpointLabel = "/v1/traditional-weapons",
   weapons,
   islands,
   provinces,
@@ -110,25 +116,25 @@ export default function SenjataView({
         <section className="page-heading">
           <div>
             <p>Koleksi Budaya / Pengelolaan Konten</p>
-            <h2>Senjata Tradisional Nusantara</h2>
+            <h2>{contentTitle}</h2>
             <span>
-              Jelajahi keragaman senjata dan cerita sejarah dari seluruh Indonesia.
+              Jelajahi keragaman {itemLabel} dan ceritanya dari seluruh Indonesia.
             </span>
           </div>
           <button className="add-button senjata-add-button" onClick={onAdd}>
-            <AdminIcon name="plus" /> Tambah Senjata
+            <AdminIcon name="plus" /> Tambah {itemLabel}
           </button>
         </section>
 
         <section className="filters">
           <label className="search-field">
-            <span>Cari senjata</span>
+            <span>Cari {itemLabel}</span>
             <div>
               <AdminIcon name="search" />
               <input
                 value={query}
                 onChange={(event) => onQueryChange(event.target.value)}
-                placeholder="Cari nama senjata, deskripsi, atau daerah..."
+                placeholder={`Cari nama ${itemLabel}, deskripsi, atau daerah...`}
               />
             </div>
           </label>
@@ -212,23 +218,23 @@ export default function SenjataView({
 
         <section className="result-bar" aria-live="polite">
           <b>
-            {loading ? "Memuat senjata..." : `${weapons.length} senjata`}
+            {loading ? `Memuat ${itemLabel}...` : `${weapons.length} ${itemLabel}`}
           </b>
           <span>
             {error
               ? `API bermasalah (${error})`
-              : "Data dari API /api/traditional-weapons"}
+              : `Data dari API ${endpointLabel}`}
           </span>
           <span>Urutan: Terakhir diperbarui</span>
         </section>
 
         {loading ? (
           <div className="empty-state" role="status">
-            <p>Sedang memuat data senjata tradisional dari server...</p>
+            <p>Sedang memuat data {itemLabel} dari server...</p>
           </div>
         ) : error ? (
           <section className="empty-state" role="alert">
-            <h3>Gagal memuat data senjata tradisional</h3>
+            <h3>Gagal memuat data {itemLabel}</h3>
             <p>{error}</p>
           </section>
         ) : weapons.length ? (
@@ -281,13 +287,13 @@ export default function SenjataView({
             <AdminIcon name="search" />
             <h3>
               {query || province || filterIslandId || status !== "Semua status"
-                ? "Senjata tidak ditemukan"
-                : "Belum ada data senjata tradisional"}
+                ? `${itemLabel.charAt(0).toUpperCase()}${itemLabel.slice(1)} tidak ditemukan`
+                : `Belum ada data ${itemLabel}`}
             </h3>
             <p>
               {query || province || filterIslandId || status !== "Semua status"
                 ? "Coba ubah atau atur ulang filter."
-                : "Belum ada data yang tersedia dari API /api/traditional-weapons."}
+                : `Belum ada data yang tersedia dari API ${endpointLabel}.`}
             </p>
             {(query || province || filterIslandId || status !== "Semua status") && (
               <button type="button" onClick={onResetFilters}>

@@ -9,8 +9,9 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import "./styles/Login.css";
+import { getApiBaseUrl } from "../api"
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_BASE = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 export default function LoginPage() {
   const location = useLocation();
@@ -33,7 +34,7 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-     const res = await fetch(`${API_URL}/api/login`, {
+     const res = await fetch(`${API_BASE}/v1/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

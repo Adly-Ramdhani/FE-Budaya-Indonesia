@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
+import { getApiBaseUrl } from "../api"
 
 const assets = "/assets"
 
@@ -503,7 +504,8 @@ function SectionLabel({
 }
 
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
+const API_BASE = API_URL
 
 function truncate(text = "", max = 120) {
   if (text.length <= max) return text
@@ -547,13 +549,10 @@ function useStories(endpoint: string) {
 
   useEffect(() => {
     const controller = new AbortController()
-    const url = `${API_URL}/${endpoint.replace(/^\//, "")}`
+    const url = `${API_BASE}/${endpoint.replace(/^\//, "")}`
     fetch(url, {
       signal: controller.signal,
-      headers: {
-        Accept: "application/json",
-        "ngrok-skip-browser-warning": "true",
-      },
+     headers: { Accept: "application/json" },
     })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -618,7 +617,7 @@ function useSongs() {
 
   useEffect(() => {
     const controller = new AbortController()
-    fetch(`${API_URL}/api/songs`, {
+    fetch(`${API_BASE}/v1/songs`, {
       signal: controller.signal,
       headers: {
         Accept: "application/json",
@@ -663,15 +662,20 @@ export default function HomePage() {
     stories: instruments,
     loading: instrumentsLoading,
     error: instrumentsError,
-  } = useStories("/api/musical-instruments")
+  } = useStories("/v1/musical-instruments")
   const { stories: weapons, loading: weaponsLoading, error: weaponsError } =
-    useStories("/api/traditional-weapons")
+    useStories("/v1/traditional-weapons")
   const { stories: houses, loading: housesLoading, error: housesError } =
-  useStories("/api/traditional-houses")
+  useStories("/v1/traditional-houses")
   const { stories: foods, loading: foodsLoading, error: foodsError } =
-  useStories("/api/foods")
+  useStories("/v1/foods")
+  const {
+    stories: traditionalAttires,
+    loading: traditionalAttiresLoading,
+    error: traditionalAttiresError,
+  } = useStories("/v1/traditional-attires")
   const { stories: dances, loading: dancesLoading, error: dancesError } =
-  useStories("/api/dances")
+  useStories("/v1/dances")
 const { songs, loading: songsLoading, error: songsError } = useSongs()
 
   const matchingCategories = categories.filter((category) => {
@@ -1083,7 +1087,18 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           />
           <div className="split split--reverse">
             <div>
-              <p>Data pakaian daerah belum tersedia.</p>
+              {traditionalAttiresLoading && <p>Memuat data...</p>}
+              {traditionalAttiresError && (
+                <p>Gagal memuat data: {traditionalAttiresError}</p>
+              )}
+              {!traditionalAttiresLoading &&
+                !traditionalAttiresError &&
+                traditionalAttires.length === 0 && (
+                  <p>Belum ada data pakaian daerah.</p>
+                )}
+              {traditionalAttires.length > 0 && (
+                <StoryList stories={traditionalAttires.slice(0, 3)} />
+              )}
               <ArrowLink>Jelajahi pakaian daerah</ArrowLink>
             </div>
           </div>

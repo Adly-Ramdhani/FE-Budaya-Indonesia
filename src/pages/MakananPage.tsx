@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom"
 import { useEffect, useMemo, useState } from "react"
+import { getApiBaseUrl } from "../api"
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 type Dish = {
   id: string | number
@@ -30,7 +31,7 @@ function useDishes() {
   useEffect(() => {
     const controller = new AbortController()
 
-    fetch(`${API_URL}/api/foods`, {
+    fetch(`${API_URL}/v1/foods`, {
       signal: controller.signal,
       headers: {
         Accept: "application/json",

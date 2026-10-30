@@ -6,9 +6,9 @@ import EditeTarian from "../../../components/Admin/Tarian/EditeTarian"
 import { resolveTarianImage } from "../../../components/Admin/Tarian/tarianImage"
 import type { Province } from "../../../components/Admin/Tarian/TarianView"
 import styles from "../../AdminDashboard.module.css"
+import { getApiBaseUrl } from "../../../api"
 
-const rawApiUrl = import.meta.env.VITE_API_URL || ""
-const API_URL = rawApiUrl.trim().replace(/\/$/, "")
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 function getApiUrl(path: string): string {
   return API_URL ? `${API_URL}${path}` : path
@@ -100,14 +100,14 @@ export default function EditTarianPage() {
       setProvincesError(null)
       try {
         const [danceResult, provinceResult] = await Promise.allSettled([
-          fetch(getApiUrl(`/api/dances/${danceId}`), {
+          fetch(getApiUrl(`/v1/dances/${danceId}`), {
             signal: controller.signal,
             headers: {
               Accept: "application/json",
               "ngrok-skip-browser-warning": "true",
             },
           }),
-          fetch(getApiUrl("/api/provinces"), {
+          fetch(getApiUrl("/v1/provinces"), {
             signal: controller.signal,
             headers: {
               Accept: "application/json",
@@ -236,7 +236,7 @@ export default function EditTarianPage() {
       if (image) formData.append("image", image)
 
       const token = getAuthToken()
-      const response = await fetch(getApiUrl(`/api/dances/${danceId}`), {
+      const response = await fetch(getApiUrl(`/v1/dances/${danceId}`), {
         method: "POST",
         headers: {
           Accept: "application/json",

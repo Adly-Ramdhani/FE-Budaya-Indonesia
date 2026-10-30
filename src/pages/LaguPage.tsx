@@ -1,8 +1,9 @@
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import styles from "./styles/JelajahiLagu.module.css";
+import { getApiBaseUrl } from "../api"
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 export type Song = {
     id: string | number
@@ -518,7 +519,7 @@ function useSongs() {
             return
         }
 
-        fetch(`${API_URL}/api/songs`, {
+        fetch(`${API_URL}/v1/songs`, {
             signal: controller.signal,
             headers: {
                 Accept: "application/json",

@@ -5,9 +5,9 @@ import { AdminSidebar, AdminTopbar } from "../../../components/Admin/AdminChrome
 import CreateTarian from "../../../components/Admin/Tarian/Createtarian"
 import type { Province } from "../../../components/Admin/Tarian/TarianView"
 import styles from "../../AdminDashboard.module.css"
+import { getApiBaseUrl } from "../../../api"
 
-const rawApiUrl = import.meta.env.VITE_API_URL || ""
-const API_URL = rawApiUrl.trim().replace(/\/$/, "")
+const API_URL = getApiBaseUrl(import.meta.env.VITE_API_URL)
 
 function getApiUrl(path: string): string {
   return API_URL ? `${API_URL}${path}` : path
@@ -53,7 +53,7 @@ export default function CreateTarianPage() {
 
     async function loadProvinces() {
       try {
-        const response = await fetch(getApiUrl("/api/provinces"), {
+        const response = await fetch(getApiUrl("/v1/provinces"), {
           signal: controller.signal,
           headers: {
             Accept: "application/json",
@@ -111,7 +111,7 @@ export default function CreateTarianPage() {
       if (image) formData.append("image", image)
 
       const token = getAuthToken()
-      const response = await fetch(getApiUrl("/api/dances"), {
+      const response = await fetch(getApiUrl("/v1/dances"), {
         method: "POST",
         headers: {
           Accept: "application/json",

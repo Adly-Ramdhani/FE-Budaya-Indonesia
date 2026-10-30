@@ -132,7 +132,7 @@ h1 {
 }
 
 .form-wrap {
-  width: min(100%, 370px);
+  width: min(100%, 420px);
   margin: 58px auto 0;
 }
 
@@ -140,7 +140,7 @@ h1 {
   background: var(--card);
   border: 1px solid #dfd3bf;
   border-radius: 13px;
-  padding: 29px 29px 28px;
+  padding: 32px 32px 30px;
   box-shadow: 0 5px 12px #352b1b09;
 }
 

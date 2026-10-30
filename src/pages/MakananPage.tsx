@@ -156,7 +156,7 @@ export default function MakananPage() {
   const [query, setQuery] = useState("")
   const [region, setRegion] = useState("Semua daerah")
   const [category, setCategory] = useState("Semua masakan")
-  const [sort, setSort] = useState("Pilihan Jelajahin")
+  const [sort, setSort] = useState("Rekomendasi")
   const [mobileOpen, setMobileOpen] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -194,6 +194,8 @@ export default function MakananPage() {
 
   const scrollToExplore = () =>
     document.getElementById("jelajah")?.scrollIntoView({ behavior: "smooth" })
+  const scrollToRegion = () =>
+    document.getElementById("daerah")?.scrollIntoView({ behavior: "smooth" })
 
   return (
     <div className="min-h-screen bg-[#f7f3eb] text-[#312b27]">
@@ -202,12 +204,12 @@ export default function MakananPage() {
           <Link
             to="/"
             className="flex items-center gap-2.5"
-            aria-label="Jelajahin"
+            aria-label="Purwa Nusantara"
           >
             <span className="grid h-8 w-8 place-items-center rounded-full bg-[#b84c37] text-[#fffaf2]">
               <BookIcon className="h-4 w-4" />
             </span>
-            <span className="font-display text-[22px]">jelajahin</span>
+            <span className="font-display text-[22px]">Purwa Nusantara</span>
           </Link>
 
           <nav className="hidden h-full items-center gap-9 text-[13px] text-[#756d65] md:flex">
@@ -217,11 +219,8 @@ export default function MakananPage() {
             <a className="transition hover:text-[#b84c37]" href="#daerah">
               Jelajah daerah
             </a>
-            <a className="transition hover:text-[#b84c37]" href="#cerita">
-              Cerita kuliner
-            </a>
-            <a className="transition hover:text-[#b84c37]" href="#tentang">
-              Tentang Jelajahin
+            <a className="transition hover:text-[#b84c37]" href="/#tentang">
+              Tentang Purwa Nusantara
             </a>
           </nav>
 
@@ -257,18 +256,17 @@ export default function MakananPage() {
         {mobileOpen && (
           <nav className="border-t border-[#e8e0d3] px-5 py-4 text-sm md:hidden">
             {[
-              "Jelajahi makanan",
-              "Jelajah daerah",
-              "Cerita kuliner",
-              "Tentang Jelajahin",
+              { label: "Jelajahi makanan", href: "#jelajah" },
+              { label: "Jelajah daerah", href: "#daerah" },
+              { label: "Tentang Purwa Nusantara", href: "/#tentang" },
             ].map((item) => (
               <a
                 className="block py-2"
-                href="#jelajah"
-                key={item}
+                href={item.href}
+                key={item.label}
                 onClick={() => setMobileOpen(false)}
               >
-                {item}
+                {item.label}
               </a>
             ))}
           </nav>
@@ -292,7 +290,7 @@ export default function MakananPage() {
               <button className="primary-button" onClick={scrollToExplore}>
                 Mulai jelajah makanan
               </button>
-              <button className="text-link" onClick={scrollToExplore}>
+              <button className="text-link" onClick={scrollToRegion}>
                 Pilih daerah asal <ArrowRight />
               </button>
             </div>
@@ -354,34 +352,17 @@ export default function MakananPage() {
               <p className="mt-1 text-[12px] leading-5 text-[#776f67]">
                 Mulai dari daerah yang membuatmu penasaran.
               </p>
-              {/* <div className="mt-5 flex gap-2 overflow-x-auto pb-2 lg:block lg:space-y-1 lg:overflow-visible">
+              <div className="mt-5 flex gap-2 overflow-x-auto pb-2 lg:block lg:space-y-1 lg:overflow-visible">
                 {regions.map((item) => (
                   <button
                     key={item}
                     onClick={() => setRegion(item)}
-                    className={`region-button ${region === item ? "active" : ""
-                      }`}
+                    className={`region-button ${region === item ? "active" : ""}`}
                   >
                     <BookIcon className="h-4 w-4 shrink-0" />
                     <span>{item}</span>
                   </button>
                 ))}
-              </div> */}
-              <div className="mt-7 hidden rounded-xl bg-[#eee7da] p-5 lg:block">
-                <BookIcon className="h-7 w-7 text-[#b84c37]" />
-                <h3 className="mt-3 font-display text-xl">
-                  Satu rasa, banyak cerita
-                </h3>
-                <p className="mt-2 text-[12px] leading-5 text-[#776f67]">
-                  Beberapa makanan hidup di lebih dari satu daerah. Lokasi asal
-                  menunjukkan akar ceritanya.
-                </p>
-                <button
-                  className="mt-4 text-link"
-                  onClick={() => setRegion("Semua daerah")}
-                >
-                  Lihat semua provinsi <ArrowRight />
-                </button>
               </div>
             </aside>
 
@@ -402,7 +383,7 @@ export default function MakananPage() {
                     value={sort}
                     onChange={(event) => setSort(event.target.value)}
                   >
-                    <option>Pilihan Jelajahin</option>
+                    <option>Rekomendasi</option>
                     <option>Nama A–Z</option>
                   </select>
                 </label>
@@ -494,7 +475,7 @@ export default function MakananPage() {
                   className="secondary-button mt-4"
                   onClick={() => setCategory("Semua masakan")}
                 >
-                  Jelajahi lebih banyak makanan
+                  Tampilkan semua makanan
                 </button>
                 <p className="mt-4 text-[11px] text-[#a09890]">
                   Katalog akan terus diperbarui dengan kekayaan makanan

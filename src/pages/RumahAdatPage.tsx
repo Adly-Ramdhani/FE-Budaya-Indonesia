@@ -154,7 +154,7 @@ export default function RumahAdatPage() {
   const [query, setQuery] = useState("")
   const [region, setRegion] = useState("Semua daerah")
   const [category, setCategory] = useState("Semua kategori")
-  const [sort, setSort] = useState("Pilihan Jelajahin")
+  const [sort, setSort] = useState("Rekomendasi")
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedHouse, setSelectedHouse] = useState<House | null>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -210,6 +210,8 @@ export default function RumahAdatPage() {
 
   const scrollToExplore = () =>
     document.getElementById("jelajah")?.scrollIntoView({ behavior: "smooth" })
+  const scrollToRegion = () =>
+    document.getElementById("daerah")?.scrollIntoView({ behavior: "smooth" })
 
   return (
     <div className="min-h-screen bg-[#f7f3eb] text-[#312b27]">
@@ -218,12 +220,12 @@ export default function RumahAdatPage() {
           <Link
             to="/"
             className="flex items-center gap-2.5"
-            aria-label="Jelajahin"
+            aria-label="Purwa Nusantara"
           >
             <span className="grid h-8 w-8 place-items-center rounded-full bg-[#b84c37] text-[#fffaf2]">
               <BookIcon className="h-4 w-4" />
             </span>
-            <span className="font-display text-[22px]">jelajahin</span>
+            <span className="font-display text-[22px]">Purwa Nusantara</span>
           </Link>
 
           <nav className="hidden h-full items-center gap-9 text-[13px] text-[#756d65] md:flex">
@@ -233,11 +235,8 @@ export default function RumahAdatPage() {
             <a className="transition hover:text-[#b84c37]" href="#daerah">
               Jelajah daerah
             </a>
-            <a className="transition hover:text-[#b84c37]" href="#cerita">
-              Cerita kuliner
-            </a>
-            <a className="transition hover:text-[#b84c37]" href="#tentang">
-              Tentang Jelajahin
+            <a className="transition hover:text-[#b84c37]" href="/#tentang">
+              Tentang Purwa Nusantara
             </a>
           </nav>
 
@@ -273,18 +272,17 @@ export default function RumahAdatPage() {
         {mobileOpen && (
           <nav className="border-t border-[#e8e0d3] px-5 py-4 text-sm md:hidden">
             {[
-              "Jelajahi rumah adat",
-              "Jelajah daerah",
-              "Cerita kuliner",
-              "Tentang Jelajahin",
+              { label: "Jelajahi rumah adat", href: "#jelajah" },
+              { label: "Jelajah daerah", href: "#daerah" },
+              { label: "Tentang Purwa Nusantara", href: "/#tentang" },
             ].map((item) => (
               <a
                 className="block py-2"
-                href="#jelajah"
-                key={item}
+                href={item.href}
+                key={item.label}
                 onClick={() => setMobileOpen(false)}
               >
-                {item}
+                {item.label}
               </a>
             ))}
           </nav>
@@ -308,7 +306,7 @@ export default function RumahAdatPage() {
               <button className="primary-button" onClick={scrollToExplore}>
                 Mulai jelajah rumah adat
               </button>
-              <button className="text-link" onClick={scrollToExplore}>
+              <button className="text-link" onClick={scrollToRegion}>
                 Pilih daerah asal <ArrowRight />
               </button>
             </div>
@@ -428,7 +426,7 @@ export default function RumahAdatPage() {
                       setCurrentPage(1)
                     }}
                   >
-                    <option>Pilihan Jelajahin</option>
+                    <option>Rekomendasi</option>
                     <option>Nama A–Z</option>
                     <option>Nama Z–A</option>
                   </select>

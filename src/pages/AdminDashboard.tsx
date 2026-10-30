@@ -463,7 +463,7 @@ export default function AdminDashboard() {
             </tbody></table></div>
             <div className={styles.tableFooter}><span>Menampilkan {visibleItems.length ? Math.min(visibleItems.length - (page - 1) * 7, 7) : 0} dari {visibleItems.length} konten API</span><div className={styles.pagination}><button aria-label="Halaman sebelumnya" onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}><ChevronLeft size={15} /></button><span>{page}</span><button aria-label="Halaman berikutnya" onClick={() => setPage(page + 1)} disabled={visibleItems.length <= page * 7}><ChevronRight size={15} /></button></div><small><span className={styles.syncDot} />Data dari API</small></div>
           </section>
-          <footer className={styles.footer}><span>© 2026 Budaya Indonesia · Merawat cerita bersama.</span><span>Konten terbaru dari API</span></footer>
+          <footer className={styles.footer}><span>© 2026 Purwa Nusantara · Merawat cerita bersama.</span><span>Konten terbaru dari API</span></footer>
         </div>
       </main>
 

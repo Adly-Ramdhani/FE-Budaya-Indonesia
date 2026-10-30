@@ -1213,11 +1213,11 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
               <a href="#top">Hubungi kami</a>
             </div>
           </div>
-        </div>
-        <div className="shell footer-note">
-          Budaya terus hidup dan berkembang. Contoh di halaman ini adalah
-          pengantar; ragam, sebutan, dan praktiknya dapat berbeda di setiap
-          komunitas.
+          <div className="footer-note">
+            Budaya terus hidup dan berkembang. Contoh di halaman ini adalah
+            pengantar; ragam, sebutan, dan praktiknya dapat berbeda di setiap
+            komunitas.
+          </div>
         </div>
         <div className="shell copyright">
           <span>© 2026 Purwa Nusantara. Merayakan warisan bersama.</span>

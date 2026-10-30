@@ -941,8 +941,12 @@ h1 {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.25fr 1fr 280px;
-  gap: 72px;
+  grid-template-columns:
+    minmax(250px, 1.1fr)
+    minmax(200px, 0.9fr)
+    minmax(190px, 0.9fr)
+    minmax(280px, 1.2fr);
+  gap: 48px;
   padding-bottom: 44px;
 }
 
@@ -994,7 +998,8 @@ h1 {
 }
 
 .footer-note {
-  padding-block: 20px;
+  align-self: stretch;
+  padding-block: 18px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   color: var(--muted);
@@ -1032,10 +1037,15 @@ h1 {
   }
 
   .footer-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px;
   }
 
   .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer-note {
     grid-column: 1 / -1;
   }
 }

@@ -1181,8 +1181,8 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           <div className="footer-brand">
             <Brand />
             <p>
-              Ruang untuk mengenal warisan, merayakan perbedaan, dan mendekatkan
-              cerita budaya kepada kita semua.
+              Jelajahi lagu, tarian, alat musik, senjata tradisional, pakaian
+              daerah, rumah adat, dan makanan dari berbagai penjuru Indonesia.
             </p>
             <div className="socials">
               {(["instagram", "youtube", "facebook"] as const).map(
@@ -1207,23 +1207,19 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
           <div>
             <h3>KENALI LEBIH DEKAT</h3>
             <div className="footer-links">
-              <a href="#tentang">Tentang kami</a>
-              <a href="#cerita">Cerita Nusantara</a>
-              <a href="#top">Sumber & referensi</a>
-              <a href="#top">Hubungi kami</a>
+              <a href="#tentang">Tentang Purwa Nusantara</a>
+              <a href="#ragam">Jelajahi ragam budaya</a>
+              <a href="#top">Kembali ke beranda</a>
             </div>
           </div>
           <div className="footer-note">
-            Budaya terus hidup dan berkembang. Contoh di halaman ini adalah
-            pengantar; ragam, sebutan, dan praktiknya dapat berbeda di setiap
-            komunitas.
+            Setiap tradisi punya makna dan cerita. Sebutan serta praktiknya
+            dapat berbeda di tiap komunitas—mari mengenalnya dengan rasa ingin
+            tahu dan hormat.
           </div>
           <div className="copyright">
-            <span>© 2026 Purwa Nusantara. Merayakan warisan bersama.</span>
-            <span>
-              <a href="#top">Privasi</a>
-              <a href="#top">Ketentuan penggunaan</a>
-            </span>
+            <span>© 2026 Purwa Nusantara.</span>
+            <span>Mengenal dan merayakan budaya Nusantara.</span>
           </div>
         </div>
       </footer>

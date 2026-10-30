@@ -347,7 +347,11 @@ function FeatureImage({
 }) {
   return (
     <figure className="feature-image">
-      <img className="feature-photo" src={`${assets}/${image}`} alt="" />
+      <img
+        className="feature-photo"
+        src={resolveImage(image) ?? `${assets}/2489a.png`}
+        alt={title}
+      />
       <figcaption>
         <span>
           <strong>{title}</strong>
@@ -667,6 +671,10 @@ export default function HomePage() {
     loading: instrumentsLoading,
     error: instrumentsError,
   } = useStories("/v1/musical-instruments")
+  const featuredInstrument = instruments.find((instrument) => instrument.image)
+  const visibleInstruments = featuredInstrument
+    ? [featuredInstrument, ...instruments.filter((instrument) => instrument !== featuredInstrument)]
+    : instruments
   const { stories: weapons, loading: weaponsLoading, error: weaponsError } =
     useStories("/v1/traditional-weapons")
   const { stories: houses, loading: housesLoading, error: housesError } =
@@ -1040,14 +1048,14 @@ const { songs, loading: songsLoading, error: songsError } = useSongs()
                 !instrumentsError &&
                 instruments.length === 0 && <p>Belum ada data alat musik.</p>}
               {instruments.length > 0 && (
-                <StoryList stories={instruments.slice(0, 3)} />
+                <StoryList stories={visibleInstruments.slice(0, 3)} />
               )}
               <ArrowLink dark>Jelajahi alat musik</ArrowLink>
             </div>
             <FeatureImage
-              image="2489a.png"
-              title="Sasando, harmoni dari Rote"
-              subtitle="Pulau Rote • Nusa Tenggara Timur"
+            image={featuredInstrument?.image ?? "2489a.png"}
+            title={featuredInstrument?.name ?? "Sasando, harmoni dari Rote"}
+            subtitle={featuredInstrument?.region || "Pulau Rote • Nusa Tenggara Timur"}
             />
           </div>
         </div>
